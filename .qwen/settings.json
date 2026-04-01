@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node *)",
+      "Bash(type *)",
+      "Bash(npm *)",
+      "Bash(del *)",
+      "Bash(findstr *)",
+      "Bash(timeout *)"
+    ]
+  },
+  "$version": 3
+}

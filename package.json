@@ -1,0 +1,46 @@
+{
+  "name": "atheon-protocol",
+  "version": "0.1.0",
+  "description": "Decentralized DEX Factory with Auto-Liquidity Deployment on Nervos CKB",
+  "main": "build/setup.js",
+  "scripts": {
+    "start": "node build/setup.js",
+    "setup": "node build/setup.js",
+    "deploy": "node build/deploy.js",
+    "devnet": "node build/devnet.js",
+    "test": "node build/test.js",
+    "build:factory": "cd contracts/factory && cargo build --release --target riscv64imac-unknown-none-elf",
+    "build:pool": "cd contracts/pool && cargo build --release --target riscv64imac-unknown-none-elf",
+    "build:registry": "cd contracts/registry && cargo build --release --target riscv64imac-unknown-none-elf",
+    "build": "npm run build:factory && npm run build:pool && npm run build:registry"
+  },
+  "keywords": [
+    "nervos",
+    "ckb",
+    "dex",
+    "amm",
+    "factory",
+    "launchpad",
+    "defi",
+    "atheon"
+  ],
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@ckb-ccc/ccc": "^1.1.25",
+    "@ckb-ccc/core": "^1.12.5",
+    "@ckb-lumos/base": "^0.23.0",
+    "@ckb-lumos/bi": "^0.23.0",
+    "@ckb-lumos/codec": "^0.23.0",
+    "@ckb-lumos/common-scripts": "^0.23.0",
+    "@ckb-lumos/crypto": "^0.0.0-canary-193ba6a-20240627103741",
+    "@ckb-lumos/helpers": "^0.23.0",
+    "@ckb-lumos/rpc": "^0.23.0",
+    "@ckb-lumos/transaction-manager": "^0.23.0",
+    "@noble/hashes": "^2.0.1",
+    "@noble/secp256k1": "^3.0.0",
+    "axios": "^1.6.0",
+    "blake2b": "^2.1.4",
+    "dotenv": "^17.3.1"
+  }
+}
