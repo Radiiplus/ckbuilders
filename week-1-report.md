@@ -1,65 +1,160 @@
-## Builder Track Weekly Report — Week 1
+# 📊 Builder Track Weekly Report — Week 1
 
-**Name:** Positive Vibes  
-**Week Ending:** April 1, 2026
+> **Tracking progress in the CKB Academy Builder Program**
 
-### Courses Completed
+---
 
-- Completed **Summary 1** of the CKB Academy course
-- Currently transitioning into **Summary 2**
-- Key topics covered:
-  - Nervos CKB architecture and cell model
-  - Transaction structure and validation
-  - Lock scripts and type scripts
-  - xUDT token standard
+<table>
+  <tr>
+    <td>👤 <b>Name:</b></td>
+    <td>Positive Vibes</td>
+  </tr>
+  <tr>
+    <td>📅 <b>Week Ending:</b></td>
+    <td>April 1, 2026</td>
+  </tr>
+  <tr>
+    <td>🎯 <b>Track:</b></td>
+    <td>CKB Developer Builder</td>
+  </tr>
+</table>
 
-### Key Learnings
+---
 
-- **Cell Model**: Understanding how CKB's cell-based storage differs from account-based models
-- **Transaction Flow**: How inputs, outputs, and witnesses work together in CKB transactions
-- **Script System**: The role of lock scripts (ownership) vs type scripts (validation logic)
-- **Development Workflow**: How to set up devnet, deploy contracts, and interact with the chain
+## 📚 Courses Completed
 
-### Practical Progress
+```
+Progress: ████████░░░░░░░░░░░░ 40%
+          Summary 1 ✅  →  Summary 2 🔄
+```
 
-**Project: ATHEON Protocol - Decentralized Token Launchpad**
+| Status | Module | Topics |
+|--------|--------|--------|
+| ✅ | **Summary 1** | CKB architecture, cell model, transaction structure |
+| 🔄 | **Summary 2** | _In Progress_ |
 
-Built the foundation for a token launchpad with automatic DEX deployment:
+### Key Topics Covered
+- 🧱 Nervos CKB architecture and cell model
+- 📦 Transaction structure and validation
+- 🔐 Lock scripts and type scripts
+- 🪙 xUDT token standard
 
-- **Devnet Infrastructure**:
-  - Automated devnet setup scripts (start, fund wallets, deploy)
-  - Multi-wallet management system
-  - Faucet for funding test accounts
+---
 
-- **Smart Contract Structure**:
-  - Created 3 contract repositories:
-    - `contracts/factory/` - DEX Factory
-    - `contracts/pool/` - DEX Pool (x*y=k AMM)
-    - `contracts/registry/` - DEX Registry
-  - Set up Rust project structure for RISC-V compilation
+## 💡 Key Learnings
 
-- **TypeScript SDK**:
-  - `sdk/dex.ts` - Pool interaction utilities (swap calculations, LP token math)
-  - `sdk/factory.ts` - Factory client with transaction building
+<details>
+<summary><b>📖 Cell Model</b> — Click to expand</summary>
 
-- **Documentation**:
-  - Protocol specifications for all 3 components
-  - Architecture diagrams and flow documentation
-  - Project README explaining the core concept
+> Understanding how CKB's cell-based storage differs from account-based models like Ethereum. Cells are the fundamental storage unit, similar to UTXOs but more flexible.
+</details>
 
-- **Repository**:
-  - Code pushed to GitHub: https://github.com/Radiiplus/ckbuilders
+<details>
+<summary><b>🔄 Transaction Flow</b> — Click to expand</summary>
 
-### Environment
+> How inputs, outputs, and witnesses work together in CKB transactions. The separation of lock and type scripts enables powerful validation logic.
+</details>
 
-- **CKB Devnet**: Running locally with automated scripts
-- **Rust & Cargo**: Installed and configured for RISC-V target
-- **Node.js**: Development environment set up
-- **CLI Tools**: offckb, CCC SDK integrated into build scripts
+<details>
+<summary><b>🔧 Script System</b> — Click to expand</summary>
 
-### Next Week Goals
+> The role of lock scripts (ownership) vs type scripts (validation logic). This separation is key to CKB's flexibility.
+</details>
 
-1. Complete **Summary 2** of CKB Academy
-2. Implement the DEX Pool contract (x*y=k AMM logic)
-3. Write unit tests for pool operations
-4. Begin DEX Registry contract structure
+<details>
+<summary><b>⚙️ Development Workflow</b> — Click to expand</summary>
+
+> How to set up devnet, deploy contracts, and interact with the chain using CLI tools and SDKs.
+</details>
+
+---
+
+## 🛠️ Practical Progress
+
+### Project: ATHEON Protocol
+
+> **A decentralized token launchpad with automatic DEX deployment on Nervos CKB**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  🚀 Launchpad → 💰 Bonding Curve → 🤖 Auto-Deploy → 📈 DEX │
+└─────────────────────────────────────────────────────────────┘
+```
+
+#### ✅ Devnet Infrastructure
+- [x] Automated devnet setup scripts
+- [x] Multi-wallet management system  
+- [x] Faucet for funding test accounts
+
+#### 📁 Smart Contract Structure
+```
+contracts/
+├── factory/    🏭 DEX Factory
+├── pool/       🔄 DEX Pool (x*y=k AMM)
+└── registry/   📋 DEX Registry
+```
+- [x] Rust project structure for RISC-V compilation
+- [ ] Contract implementation (in progress)
+
+#### 💻 TypeScript SDK
+| File | Purpose |
+|------|---------|
+| `sdk/dex.ts` | Pool utilities (swap calc, LP math) |
+| `sdk/factory.ts` | Factory client with tx building |
+
+#### 📚 Documentation
+- [x] Protocol specifications (3 components)
+- [x] Architecture diagrams
+- [x] Project README
+
+#### 🌐 Repository
+- ✅ **Live on GitHub:** https://github.com/Radiiplus/ckbuilders
+
+---
+
+## 🖥️ Environment Setup
+
+| Tool | Status | Notes |
+|------|--------|-------|
+| **CKB Devnet** | 🟢 Running | Local node with automated scripts |
+| **Rust & Cargo** | 🟢 Installed | Configured for RISC-V target |
+| **Node.js** | 🟢 Installed | Development environment ready |
+| **CLI Tools** | 🟢 Integrated | offckb, CCC SDK in build scripts |
+
+---
+
+## 🎯 Next Week Goals
+
+```
+Priority Queue:
+┌─────────────────────────────────────────────────────────────┐
+│  1. 📚 Complete Summary 2 (CKB Academy)                    │
+│  2. 🦀 Implement DEX Pool contract (x*y=k AMM)             │
+│  3. ✅ Write unit tests for pool operations                │
+│  4. 🏗️ Begin DEX Registry contract structure               │
+└─────────────────────────────────────────────────────────────┘
+```
+
+| # | Goal | Priority | Status |
+|---|------|----------|--------|
+| 1 | Complete Summary 2 | 🔴 High | ⏳ Pending |
+| 2 | DEX Pool contract | 🔴 High | ⏳ Pending |
+| 3 | Unit tests | 🟡 Medium | ⏳ Pending |
+| 4 | DEX Registry start | 🟡 Medium | ⏳ Pending |
+
+---
+
+## 📈 Progress Summary
+
+| Category | Completion |
+|----------|------------|
+| Coursework | 40% |
+| Project Setup | 80% |
+| Contract Dev | 20% |
+| Documentation | 100% |
+
+**Overall Week 1: 🎯 On Track**
+
+---
+
+*Report generated for CKB Academy Builder Track*
