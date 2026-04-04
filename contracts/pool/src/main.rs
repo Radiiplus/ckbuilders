@@ -1,4 +1,3 @@
-// DEX Pool - Main Entry Point
 #![no_std]
 #![no_main]
 #![allow(dead_code)]

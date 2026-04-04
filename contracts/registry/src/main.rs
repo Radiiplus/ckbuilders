@@ -1,4 +1,3 @@
-// DEX Registry - Main Entry Point
 #![no_std]
 #![no_main]
 #![allow(dead_code)]
@@ -77,7 +76,7 @@ fn validate_register_dex(registry: &RegistryData) -> i8 {
         debug!("Invalid initial status");
         return ERROR_INVALID_REGISTRY_ENTRY as i8;
     }
-    debug!("✓ DEX registration valid");
+    debug!("DEX registration valid");
     SUCCESS as i8
 }
 
@@ -91,7 +90,6 @@ fn validate_deploy_pool(registry: &RegistryData) -> i8 {
         debug!("Pool already deployed");
         return ERROR_POOL_ALREADY_DEPLOYED as i8;
     }
-    // Skip timestamp check for now - simplifies code to avoid compiler ICE
     let _current_time: u64 = 0;
     let _grace_period_end = dex_entry.reserved_at + RESERVATION_DURATION + GRACE_PERIOD_DURATION;
     let sig_result = verify_signature(&dex_entry.owner_lock_hash, 0);
@@ -99,7 +97,7 @@ fn validate_deploy_pool(registry: &RegistryData) -> i8 {
         debug!("Unauthorized");
         return ERROR_UNAUTHORIZED as i8;
     }
-    debug!("✓ Pool deployment valid");
+    debug!("Pool deployment valid");
     SUCCESS as i8
 }
 
@@ -119,6 +117,6 @@ fn validate_update_registry(registry: &RegistryData) -> i8 {
         Ok(_) => {},
         Err(e) => { debug!("Unauthorized: {:?}", e); return ERROR_UNAUTHORIZED as i8; }
     }
-    debug!("✓ Registry update authorized");
+    debug!("Registry update authorized");
     SUCCESS as i8
 }

@@ -1,4 +1,3 @@
-// DEX Registry - Utility Functions
 #![allow(dead_code)]
 
 use ckb_std::high_level::load_witness_args;
@@ -11,8 +10,6 @@ pub fn verify_signature(expected_lock_hash: &[u8; 32], witness_index: usize) -> 
     let witness_args = load_witness_args(witness_index, Source::GroupInput).map_err(|_| "Failed to load witness")?;
     let signature = witness_args.input_type().to_opt().ok_or("Missing signature")?;
     if signature.len() != 65 { return Err("Invalid signature length"); }
-    // For now, just verify signature exists and is correct length
-    // Actual signature verification happens at the CKB VM level
     Ok(())
 }
 

@@ -1,4 +1,6 @@
-require("dotenv").config();
+require("dotenv").config({
+  path: require("path").resolve(__dirname, "..", "..", ".env"),
+});
 
 const fs = require("fs");
 const path = require("path");
@@ -69,12 +71,22 @@ function rpcRequest(method, params = []) {
 function getBinaryPath(contractName) {
   const baseDir = path.join(__dirname, "..", "..", "contracts", contractName);
 
+  
+  const binaryNames = {
+    factory: "dex-factory",
+    pool: "dex-pool",
+    registry: "dex-registry",
+    dex: "dex-instance",
+    launchpad: "atheon-launchpad",
+  };
+  const binaryName = binaryNames[contractName] || contractName;
+
   const linuxPath = path.join(
     baseDir,
     "target",
     "riscv64imac-unknown-none-elf",
     "release",
-    contractName,
+    binaryName,
   );
   if (fs.existsSync(linuxPath)) {
     return linuxPath;
@@ -85,13 +97,13 @@ function getBinaryPath(contractName) {
     "target-windows",
     "riscv64imac-unknown-none-elf",
     "release",
-    contractName,
+    binaryName,
   );
   if (fs.existsSync(windowsPath)) {
     return windowsPath;
   }
 
-  const releasePath = path.join(baseDir, "target", "release", contractName);
+  const releasePath = path.join(baseDir, "target", "release", binaryName);
   if (fs.existsSync(releasePath)) {
     return releasePath;
   }
@@ -111,8 +123,16 @@ async function deployContract(contractName, deployerWallet) {
   const binaryPath = getBinaryPath(contractName);
   if (!binaryPath) {
     console.log(`  ✗ Binary not found for ${contractName}`);
+    const binaryNames = {
+      factory: "dex-factory",
+      pool: "dex-pool",
+      registry: "dex-registry",
+      dex: "dex-instance",
+      launchpad: "atheon-launchpad",
+    };
+    const binaryName = binaryNames[contractName] || contractName;
     console.log(
-      `    Expected at: target/riscv64imac-unknown-none-elf/release/${contractName}`,
+      `    Expected at: target/riscv64imac-unknown-none-elf/release/${binaryName}`,
     );
     return {
       success: false,
@@ -208,12 +228,19 @@ function parseDeploymentResult(output, binaryHash) {
 }
 
 async function deployAllContracts(wallet) {
-  const contracts = ["factory", "pool", "registry"];
+  const contracts = ["factory", "pool", "registry", "dex", "launchpad"];
   const results = [];
 
   for (const contract of contracts) {
     const result = await deployContract(contract, wallet);
     results.push(result);
+
+    
+    if (!result.success) {
+      console.log(
+        `  ⚠️  ${contract} deployment skipped (binary not found - needs cargo build --release)`,
+      );
+    }
   }
 
   return results;
@@ -291,7 +318,7 @@ function areContractsDeployed(network = "devnet") {
     return false;
   }
 
-  const requiredContracts = ["factory", "pool", "registry"];
+  const requiredContracts = ["factory", "pool", "registry", "dex", "launchpad"];
   return requiredContracts.every((c) => info.contracts[c] !== undefined);
 }
 

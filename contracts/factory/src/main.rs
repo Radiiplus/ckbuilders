@@ -1,4 +1,3 @@
-// DEX Factory - Main Entry Point
 #![no_std]
 #![no_main]
 #![allow(dead_code)]
@@ -89,7 +88,7 @@ fn validate_create_dex(factory: &FactoryData) -> i8 {
         Ok(_) => {},
         Err(e) => { debug!("Creation fee failed: {:?}", e); return ERROR_INSUFFICIENT_FEE_BALANCE as i8; }
     }
-    debug!("✓ DEX creation valid");
+    debug!("DEX creation valid");
     SUCCESS as i8
 }
 
@@ -99,7 +98,7 @@ fn validate_update_factory(factory: &FactoryData) -> i8 {
         Ok(_) => {},
         Err(e) => { debug!("Unauthorized: {:?}", e); return ERROR_UNAUTHORIZED as i8; }
     }
-    debug!("✓ Factory update authorized");
+    debug!("Factory update authorized");
     SUCCESS as i8
 }
 
@@ -109,7 +108,7 @@ fn validate_collect_fees(factory: &FactoryData) -> i8 {
         Ok(_) => {},
         Err(e) => { debug!("Unauthorized: {:?}", e); return ERROR_UNAUTHORIZED as i8; }
     }
-    debug!("✓ Fee collection authorized");
+    debug!("Fee collection authorized");
     SUCCESS as i8
 }
 
@@ -128,6 +127,6 @@ fn validate_update_dex(factory: &FactoryData) -> i8 {
         debug!("Fee mismatch");
         return ERROR_INVALID_FEE_PERCENTAGE as i8;
     }
-    debug!("✓ DEX update valid");
+    debug!("DEX update valid");
     SUCCESS as i8
 }

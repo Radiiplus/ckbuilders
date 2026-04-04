@@ -1,4 +1,3 @@
-// DEX Pool - Utility Functions
 #![allow(dead_code)]
 
 use ckb_std::high_level::load_witness_args;

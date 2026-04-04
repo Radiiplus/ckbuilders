@@ -38,7 +38,12 @@ contracts/*/target-riscv/
 lumos/
 offckb/
 ccc-repo/
+ckb-testtool/
 archive/
 
 # Environment variables
 .env
+
+.qwen/
+.threadbridge/
+-p/

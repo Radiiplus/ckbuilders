@@ -1,4 +1,3 @@
-// DEX Pool - Pool Data Structure
 #![allow(dead_code)]
 
 use ckb_std::high_level::load_cell_data;

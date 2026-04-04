@@ -1,4 +1,3 @@
-// DEX Factory - Utility Functions
 #![allow(dead_code)]
 
 use ckb_std::high_level::load_witness_args;
@@ -14,8 +13,6 @@ pub fn verify_signature(expected_lock_hash: &[u8; 32], witness_index: usize) -> 
     if signature.len() != 65 {
         return Err("Invalid signature length");
     }
-    // For now, just verify signature exists and is correct length
-    // Actual signature verification happens at the CKB VM level
     Ok(())
 }
 

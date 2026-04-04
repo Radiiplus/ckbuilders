@@ -1,11 +1,7 @@
-// ATHEON Protocol - Devnet Module
-// Provides functions to start, stop, and manage the CKB devnet
-
 const { spawn, execSync } = require("child_process");
 const http = require("http");
 const os = require("os");
 
-// Detect platform
 const isWindows = process.platform === "win32";
 const isWSL = os.release().includes("microsoft");
 
@@ -14,9 +10,6 @@ let isRunning = false;
 
 const RPC_URL = "http://127.0.0.1:8114";
 
-/**
- * Stop any existing CKB processes
- */
 function stopCKBProcesses() {
   try {
     if (isWindows) {
@@ -29,9 +22,6 @@ function stopCKBProcesses() {
   } catch {}
 }
 
-/**
- * Check if the CKB RPC is responding
- */
 async function checkRPC() {
   return new Promise((resolve) => {
     const postData = JSON.stringify({
@@ -76,9 +66,6 @@ async function checkRPC() {
   });
 }
 
-/**
- * Wait for RPC to be ready
- */
 async function waitForRPC(maxAttempts = 30) {
   for (let i = 0; i < maxAttempts; i++) {
     if (await checkRPC()) {
@@ -89,20 +76,14 @@ async function waitForRPC(maxAttempts = 30) {
   return false;
 }
 
-/**
- * Sleep for a given number of milliseconds
- */
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-/**
- * Start the devnet
- */
 async function start(options = {}) {
   const { timeout = 60000 } = options;
 
-  // Always stop any existing processes first
+  
   stopCKBProcesses();
   isRunning = false;
   devnetProcess = null;
@@ -169,9 +150,6 @@ async function start(options = {}) {
   });
 }
 
-/**
- * Stop the devnet
- */
 function stop() {
   if (devnetProcess) {
     devnetProcess.kill("SIGINT");
@@ -182,16 +160,10 @@ function stop() {
   return true;
 }
 
-/**
- * Check if devnet is running
- */
 function status() {
   return isRunning;
 }
 
-/**
- * Get the current block height
- */
 async function getBlockHeight() {
   return new Promise((resolve) => {
     const postData = JSON.stringify({
@@ -240,9 +212,6 @@ async function getBlockHeight() {
   });
 }
 
-/**
- * Get the RPC URL
- */
 function getRPCUrl() {
   return RPC_URL;
 }

@@ -1,4 +1,6 @@
-require("dotenv").config();
+require("dotenv").config({
+  path: require("path").resolve(__dirname, "..", ".env"),
+});
 
 const devnet = require("./modules/devnet");
 const wallets = require("./modules/wallets");

@@ -6,7 +6,10 @@
       "Bash(npm *)",
       "Bash(del *)",
       "Bash(findstr *)",
-      "Bash(timeout *)"
+      "Bash(timeout *)",
+      "Bash(curl *)",
+      "Bash(python *)",
+      "Bash(dir *)"
     ]
   },
   "$version": 3

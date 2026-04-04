@@ -1,0 +1,12 @@
+pub const SUCCESS: usize = 0;
+pub const ERROR_INVALID_ARGUMENT: usize = 1;
+pub const ERROR_INVALID_DATA_LENGTH: usize = 2;
+pub const ERROR_UNAUTHORIZED: usize = 3;
+pub const ERROR_INVALID_OPERATION: usize = 4;
+pub const ERROR_POOL_NOT_FOUND: usize = 5;
+pub const ERROR_POOL_ALREADY_EXISTS: usize = 6;
+pub const ERROR_DEX_SUSPENDED: usize = 7;
+pub const ERROR_REGISTRY_NOT_FOUND: usize = 8;
+pub const ERROR_INVALID_FEE: usize = 9;
+pub const ERROR_SLIPPAGE: usize = 10;
+pub const ERROR_INSUFFICIENT_LIQUIDITY: usize = 11;

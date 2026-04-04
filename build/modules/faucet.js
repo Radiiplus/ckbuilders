@@ -1,4 +1,6 @@
-require("dotenv").config();
+require("dotenv").config({
+  path: require("path").resolve(__dirname, "..", "..", ".env"),
+});
 
 const http = require("http");
 const { execSync } = require("child_process");
@@ -140,7 +142,9 @@ async function fundWallet(address, fullAddress, amount, timeout = 120000) {
         { encoding: "utf-8", timeout },
       );
 
-      await sleep(2000);
+      await sleep(1000);
+      await rpcRequest("generate_block", []);
+      await sleep(1000);
 
       const finalBalance = await getBalance(addressToUse);
       console.log(
@@ -154,7 +158,11 @@ async function fundWallet(address, fullAddress, amount, timeout = 120000) {
         throw e;
       }
       console.log(`  Transfer attempt ${attempt} failed, retrying...`);
-      await sleep(2000);
+      await sleep(3000);
+      try {
+        await rpcRequest("generate_block", []);
+      } catch (_) {}
+      await sleep(1000);
     }
   }
 }

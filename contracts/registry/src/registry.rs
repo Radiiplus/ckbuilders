@@ -1,4 +1,3 @@
-// DEX Registry - Registry Data Structures
 #![allow(dead_code)]
 
 use ckb_std::high_level::load_cell_data;
@@ -150,7 +149,10 @@ pub struct DexEntryData {
     pub last_trade_at: u64,
     pub trade_count: u64,
     pub last_trade_volume: u64,
-    pub reserved: [u8; 40],
+    pub stake_ckb: u64,
+    pub price_multiplier_bps: u16,
+    pub launch_offset_blocks: u64,
+    pub reserved: [u8; 32],
 }
 
 impl DexEntryData {
@@ -165,7 +167,10 @@ impl DexEntryData {
             pool_script_hash: [0u8; 32], factory_script_hash: [0u8; 32],
             dex_fee_bps: 0, bump: 0,
             last_trade_at: 0, trade_count: 0, last_trade_volume: 0,
-            reserved: [0u8; 40],
+            stake_ckb: 0,
+            price_multiplier_bps: 100,
+            launch_offset_blocks: 0,
+            reserved: [0u8; 32],
         }
     }
 
@@ -206,7 +211,10 @@ impl DexEntryData {
         bytes[235..243].copy_from_slice(&self.last_trade_at.to_le_bytes());
         bytes[243..251].copy_from_slice(&self.trade_count.to_le_bytes());
         bytes[251..259].copy_from_slice(&self.last_trade_volume.to_le_bytes());
-        bytes[259..299].copy_from_slice(&self.reserved);
+        bytes[259..267].copy_from_slice(&self.stake_ckb.to_le_bytes());
+        bytes[267..269].copy_from_slice(&self.price_multiplier_bps.to_le_bytes());
+        bytes[269..277].copy_from_slice(&self.launch_offset_blocks.to_le_bytes());
+        bytes[277..309].copy_from_slice(&self.reserved);
         bytes
     }
 
@@ -237,12 +245,17 @@ impl DexEntryData {
         let last_trade_at = u64::from_le_bytes(bytes[235..243].try_into().unwrap());
         let trade_count = u64::from_le_bytes(bytes[243..251].try_into().unwrap());
         let last_trade_volume = u64::from_le_bytes(bytes[251..259].try_into().unwrap());
+        let stake_ckb = u64::from_le_bytes(bytes[259..267].try_into().unwrap());
+        let price_multiplier_bps = u16::from_le_bytes(bytes[267..269].try_into().unwrap());
+        let launch_offset_blocks = u64::from_le_bytes(bytes[269..277].try_into().unwrap());
+        let mut reserved = [0u8; 32];
+        reserved.copy_from_slice(&bytes[277..309]);
         Ok(Self {
             dex_name_hash, owner_lock_hash, reserved_name, reservation_fee_paid, reserved_at,
             expires_at, pool_deployed_at, launch_mode, total_launches, total_volume,
             total_fees_paid, pool_count, status, pool_script_hash, factory_script_hash,
             dex_fee_bps, bump, last_trade_at, trade_count, last_trade_volume,
-            reserved: [0u8; 40],
+            stake_ckb, price_multiplier_bps, launch_offset_blocks, reserved,
         })
     }
 }

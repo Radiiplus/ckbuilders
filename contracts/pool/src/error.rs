@@ -1,4 +1,3 @@
-// DEX Pool - Error Codes
 #![allow(dead_code)]
 
 pub const SUCCESS: u8 = 0;

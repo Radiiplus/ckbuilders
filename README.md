@@ -1,142 +1,302 @@
 # ATHEON Protocol
 
-> **Fair token launches with automatic liquidity deployment**
-
----
-
-## The Problem
-
-Launching a token today is broken:
-
-1. **Manual liquidity deployment** - Creators must manually set up pools on each DEX
-2. **Single DEX launches** - Tokens only launch on one DEX, limiting access
-3. **Unclear pricing** - Initial token price is arbitrary or manipulated
-4. **High capital requirements** - Creators need CKB upfront for liquidity
-
----
-
-## The ATHEON Solution
-
-ATHEON automates the entire launch process:
+> **A decentralized token launchpad with automatic DEX deployment on Nervos CKB**
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                                                             │
-│  1. CREATE LAUNCH                                          │
-│     Creator deposits tokens, sets fundraising goal         │
-│                                                             │
-│  2. COMMUNITY CONTRIBUTES (Bonding Curve)                  │
-│     Early supporters get better prices                     │
-│     Funds locked in escrow                                 │
-│                                                             │
-│  3. THRESHOLD REACHED → AUTO-DEPLOY                        │
-│     Liquidity deployed to ALL registered DEXs at once      │
-│     70% to current DEXs, 30% held in reserve               │
-│                                                             │
-│  4. NEW DEXs REGISTER → RESERVE DEPLOYS                    │
-│     Future DEXs automatically get liquidity from reserve   │
-│     No action needed from creator                          │
-│                                                             │
-│  5. CONTRIBUTORS CLAIM LP TOKENS                           │
-│     Tokens tradeable on all DEXs                           │
-│                                                             │
+│  🚀 Launchpad → 💰 Bonding Curve → 🤖 Auto-Deploy → 📈 DEX │
 └─────────────────────────────────────────────────────────────┘
 ```
 
----
+## Overview
 
-## Key Innovation: The Reserve System
+ATHEON is a **complete DeFi protocol** built on Nervos CKB that enables anyone to launch tokens, bootstrap liquidity via bonding curves, and automatically deploy trading infrastructure — all on-chain. It combines a DEX factory, AMM pools, a token launchpad, and a registry system into a unified, self-bootstrapping ecosystem.
 
-Unlike other launchpads, ATHEON doesn't deploy all liquidity at once:
+### Core Concept
 
-| At Launch | Future DEX Registrations |
-|-----------|-------------------------|
-| 70% → Deployed to current DEXs | 30% → Held in reserve |
-| | New DEX registers → Auto-deploys from reserve |
-| | No creator action needed |
-| | Fair distribution over time |
+Traditional token launches require manual setup: deploy a token, create a pool, seed liquidity, list on a DEX. ATHEON automates this entire flow:
 
-**Why?** New DEXs can register AFTER the launch. The reserve ensures they automatically receive liquidity without the creator taking any action.
+1. **Launchpad** — Creators configure a token sale with a bonding curve (soft cap, hard cap, time window)
+2. **Bonding Curve** — Contributors deposit CKB; price increases as more capital enters
+3. **Auto-Deploy** — When the soft cap is hit, a DEX instance and AMM pool are automatically created
+4. **LP Distribution** — Contributors receive LP tokens proportional to their contribution
+5. **Refund Safety** — If the curve fails to fill, contributors can claim refunds via Merkle proofs
 
----
+### Why This Matters — How Everyone Profits
 
-## How It Works
-
-### For Token Creators
-
-```
-Create Token → Configure Launch → Deposit Tokens
-                    ↓
-         Community contributes CKB
-                    ↓
-         Threshold reached → Auto-deploy
-                    ↓
-         Receive raised CKB (minus fees)
-```
-
-**No upfront CKB needed** - You only deposit your tokens.
-
-### For Investors
-
-```
-Browse Launches → Contribute CKB → Get Receipt
-                    ↓
-         Threshold reached
-                    ↓
-         Claim LP Tokens → Trade or Earn Fees
-```
-
-**Early supporter advantage** - Bonding curve rewards early contributors with better prices.
-
-### For DEX Operators
-
-```
-Deploy DEX Pool → Register with ATHEON
-                    ↓
-         Automatically receive liquidity
-         from ALL new launches
-                    ↓
-         Earn trading fees
-```
-
-**Passive liquidity acquisition** - Your DEX gets new tokens without manual work.
+| Stakeholder | Benefit |
+|-------------|---------|
+| **Token Creators** | Launch tokens without upfront liquidity. The bonding curve handles price discovery automatically. No need to seed a pool yourself — contributors fund it. |
+| **Contributors (Early Users)** | Get in at the lowest curve price. Receive LP tokens when the launch succeeds, earning trading fees from the AMM pool. If the launch fails, full refunds are guaranteed on-chain. |
+| **LP Token Holders** | Earn a share of all trading fees generated by the DEX pool. The fee vault distributes fees proportionally to LP share holders — passive income from day one. |
+| **Traders** | Trade newly launched tokens immediately on an on-chain AMM. No centralized listing process — if a launch succeeds, the market is live. |
+| **Arbitrageurs** | Monitor price differences across active bonding curves and DEX pools. The SDK provides arbitrage detection tools to find opportunities >0.5% profit. |
+| **Protocol (Factory)** | Earns a small fee (default 0.05%) on every DEX creation and trade. The factory is self-sustaining — more launches = more protocol revenue. |
+| **CKB Ecosystem** | Every launch, contribution, and trade consumes CKB capacity and generates transaction fees, benefiting validators and the network. More on-chain activity = stronger ecosystem. |
 
 ---
 
-## Current Status
+## Repository Structure
 
-| Component | Status |
-|-----------|--------|
-| Protocol Design | ✅ Complete |
-| Devnet Setup | ✅ Complete |
-| SDK | ✅ Complete |
-| DEX Pool Contract | 🟡 In Progress |
-| DEX Registry | 🔴 Not Started |
-| Launchpad Contract | 🔴 Not Started |
+This repository is organized into four main components, each with its own detailed documentation:
+
+```
+ateon/
+├── contracts/     🦀 On-chain RISC-V contracts (Rust)
+├── sdk/           📦 JavaScript SDK (off-chain protocol library)
+├── build/         🏗️  Infrastructure & deployment scripts
+├── auto/          🤖 Protocol automation CLI
+├── deployments/   📋 Deployment records & contribution receipts
+├── offckb/        ⛓️  CKB devnet configuration
+└── ckb-testtool/  🧪 Contract testing utilities
+```
+
+### Component Documentation
+
+| Component | README | Purpose |
+|-----------|--------|---------|
+| **Contracts** | [`contracts/README.md`](contracts/README.md) | On-chain RISC-V contracts: Factory, DEX, Pool, Registry, Launchpad |
+| **SDK** | [`sdk/README.md`](sdk/README.md) | JavaScript SDK: Transaction building, encoding, fee estimation, Merkle proofs |
+| **Build** | [`build/README.md`](build/README.md) | Infrastructure: Devnet setup, wallet management, contract deployment |
+| **Auto** | [`auto/README.md`](auto/README.md) | Automation CLI: Token launches, contributions, LP claims, refunds, arbitrage |
+
+---
+
+## Architecture
+
+### On-Chain Contracts (`contracts/`)
+
+Five RISC-V contracts written in Rust, compiled to `riscv64imac-unknown-none-elf`:
+
+| Contract | Role |
+|----------|------|
+| **Factory** | Creates and manages DEX instances. Tracks owner, fees, and deployment state. |
+| **DEX** | Individual exchange instance with configurable fees and status management. |
+| **Pool** | AMM engine implementing `x * y = k` with LP token minting/burning and fee vaults. |
+| **Registry** | DEX discovery and listing. Enforces activity requirements and reservation system. |
+| **Launchpad** | Bonding curve token launches with contribution windows, LP claims, and Merkle-based refunds. |
+
+**Key design principle:** Every struct encoded by the SDK can be decoded by the on-chain contract, and vice versa — byte-level compatibility ensures trustless validation.
+
+### Off-Chain SDK (`sdk/`)
+
+A JavaScript/Node.js library that mirrors the on-chain contract structure:
+
+```
+SDK Module          ↔  On-Chain Contract    Purpose
+──────────────────     ──────────────────    ───────────────────────────────
+sdk/factory.js      ↔  contracts/factory    DEX creation, fee calculation
+sdk/pool.js         ↔  contracts/pool       AMM math, LP tokens, fee vault
+sdk/curve.js        ↔  contracts/launchpad  Bonding curve pricing
+sdk/launchpad.js    ↔  contracts/launchpad  Launch config, tx building
+sdk/refund.js       ↔  contracts/launchpad  Refund claims, Merkle proofs
+sdk/modules/merkle.js ↔ contracts/launchpad Merkle tree generation/verification
+sdk/fee.js          (off-chain only)        RBF-aware fee estimation
+sdk/txbuilder.js    (off-chain only)        Transaction construction + signing
+```
+
+The SDK handles everything the contracts *can't* do: fee estimation, RBF retry, Merkle tree generation, UTXO selection, and transaction construction.
+
+### Build Scripts (`build/`)
+
+Infrastructure scripts that set up the local CKB devnet and deploy contracts:
+
+```bash
+# Full setup: start devnet + create wallets + fund + deploy all contracts
+node build/main.js
+
+# Just start devnet + wallets + funding (no contract deployment)
+node build/setup.js
+
+# Just deploy contracts (assumes devnet is already running)
+node build/deploy.js
+```
+
+Manages 4 deterministic wallets (genesis, alice, bob, charlie) and saves deployment info to `deployments/devnet-deployments.json`.
+
+### Automation CLI (`auto/`)
+
+Interactive CLI modules that exercise the full protocol on a running devnet:
+
+```bash
+# Full protocol initialization: factory → DEX → registry → pool → launch → contribute → arbitrage
+node auto/main.js
+
+# Individual operations:
+node auto/modules/launchpad.js    # Create a new token launch
+node auto/modules/contribute.js   # Contribute CKB to a bonding curve
+node auto/modules/claim.js        # Claim LP tokens after successful launch
+node auto/modules/refund.js       # Claim refund for failed launch
+node auto/modules/arb.js          # Track arbitrage opportunities
+```
+
+Each step is **idempotent** — if something is already initialized, it skips it.
+
+---
+
+## Data Flow
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    USER (auto/ CLI or custom app)                │
+│                                                                 │
+│  node auto/main.js  →  Full protocol lifecycle                  │
+│  node auto/modules/launchpad.js  →  Create a token launch       │
+│  node auto/modules/contribute.js →  Fund a bonding curve        │
+└──────────────────────────┬──────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                         SDK (sdk/)                               │
+│                                                                 │
+│  1. Create config objects (LaunchConfig, DCurve, etc.)          │
+│  2. Encode to bytes (encodeLaunchConfig, encodeCurveData)       │
+│  3. Build transactions (buildCreateLaunchTx, buildContributeTx) │
+│  4. Estimate fees (FeeEstimator)                                │
+│  5. Sign and send (SimpleTxBuilder.buildAndSendWithRbfRetry)    │
+│  6. Wait for confirmation (waitForTransaction)                  │
+└──────────────────────────┬──────────────────────────────────────┘
+                           │ Transaction with encoded cell data
+                           ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    ON-CHAIN (contracts/)                         │
+│                                                                 │
+│  1. Load cell data from output (load_cell_data)                 │
+│  2. Decode bytes (LaunchConfig::from_bytes, DCurve::from_bytes) │
+│  3. Validate fields (status, amounts, authorization)            │
+│  4. Verify Merkle proofs (Blake2b-256)                          │
+│  5. Check state transitions (PENDING → ACTIVE → SUCCESS)        │
+│  6. Return SUCCESS or error code                                │
+└─────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
 ## Quick Start
 
+### Prerequisites
+
+- **Node.js** (v18+)
+- **Rust** with `riscv64imac-unknown-none-elf` target
+- **offckb** (CKB devnet manager)
+
+### 1. Install Dependencies
+
 ```bash
-# Install dependencies
 npm install
+```
 
-# Start devnet
-npm run devnet
+### 2. Set Up Environment
 
-# Deploy contracts
-npm run deploy
+Copy `.env.example` to `.env` and configure:
+
+```
+CKB_RPC_URL=http://127.0.0.1:8114
+CKB_GENESIS_PRIVKEY_0=0x...
+DEX_NAME=MyDEX
+```
+
+### 3. Build Contracts
+
+```bash
+npm run build
+```
+
+### 4. Start Devnet & Deploy
+
+```bash
+# Full setup: devnet + wallets + funding + contract deployment
+node build/main.js
+```
+
+### 5. Run the Protocol
+
+```bash
+# Full protocol lifecycle: factory → DEX → pool → launch → contribute → arbitrage
+node auto/main.js
 ```
 
 ---
 
-## Reports
+## Protocol Lifecycle
 
-- [Week 1 Report](./week-1-report.md)
+```
+Step 1: Initialize Factory    → Sets up the DEX factory (owner, fees)
+Step 2: Create DEX Instance   → Creates a new DEX with name, fees, owner
+Step 3: Register DEX          → Registers the DEX with the registry
+Step 4: Create Pool           → Creates an AMM pool under the DEX
+Step 5: Create Token Launch   → Creates a bonding curve token launch
+Step 6: Contribute            → Contributes CKB to the bonding curve
+Step 7: Track Arbitrage       → Scans for price differences across curves
+```
+
+After a successful launch (soft cap reached):
+- **LP tokens are minted** for all contributors
+- **DEX pool goes live** for trading
+- **Fee vault begins distributing** trading fees to LP holders
+
+If a launch fails (expires without filling):
+- **Refund claims** can be submitted with Merkle proofs
+- **Contributors receive** their CKB back
 
 ---
 
-**ATHEON Protocol**
+## Key Design Principles
 
-*Built on Nervos CKB*
+### Byte-Level Compatibility
+
+Every SDK encoding function produces bytes that the on-chain contract can decode. The byte layouts are **identical** — same offsets, same field sizes, same endianness (little-endian for integers).
+
+```javascript
+// SDK (JavaScript)
+const config = createLaunchConfig({ launchId, creatorLockHash, ... });
+const bytes = encodeLaunchConfig(config);  // → Uint8Array(512)
+
+// Contract (Rust)
+let data = load_cell_data(0, Source::GroupOutput);
+let config = LaunchConfig::from_bytes(&data);  // ← Same 512 bytes
+```
+
+### Separation of Concerns
+
+| SDK Does | Contracts Do |
+|----------|-------------|
+| Fee estimation & RBF retry | Signature verification |
+| Merkle tree generation | Merkle proof verification |
+| Transaction construction | State transition enforcement |
+| Bonding curve pricing | Capacity constraint validation |
+| UTXO selection | Authorization checks |
+
+### Idempotent Operations
+
+All `auto/` modules are idempotent — if something is already initialized, they skip it. This allows safe re-runs and partial recovery from failures.
+
+### On-Chain Status Verification
+
+Claim and refund modules fetch launch state from on-chain cells before proceeding. This prevents invalid operations (claiming LP tokens for a failed launch, or refunding a successful one).
+
+---
+
+## Testing
+
+```bash
+# Test fee estimator and tx builder
+node sdk/tests/test.js
+
+# Test capacity calculation
+node sdk/tests/test-capacity-calculation.js
+```
+
+---
+
+## License
+
+Apache-2.0
+
+---
+
+## Links
+
+- **GitHub:** https://github.com/Radiiplus/ckbuilders
+- **CKB Academy:** Builder Track
+- **Nervos CKB:** https://www.nervos.org

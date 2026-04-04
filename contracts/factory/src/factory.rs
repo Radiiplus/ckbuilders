@@ -1,31 +1,14 @@
-// DEX Factory - Factory Data Structures
-// ATHEON Protocol - Factory for creating DEX instances
-
 use ckb_std::high_level::load_cell_data;
 use ckb_std::ckb_constants::Source;
 
-/// Factory data size in bytes (256 bytes)
 pub const FACTORY_DATA_SIZE: usize = 256;
-
-/// DEX Instance data size in bytes (192 bytes)
 pub const DEX_INSTANCE_SIZE: usize = 192;
-
-/// Maximum factory fee percentage (in basis points) - 10%
 pub const MAX_FACTORY_FEE_BPS: u16 = 1000;
-
-/// Default factory fee percentage (in basis points) - 16.67% of DEX fee
 pub const DEFAULT_FACTORY_FEE_BPS: u16 = 500;
-
-/// DEX Creator fee percentage (in basis points) - 10% of DEX fee
 pub const DEFAULT_CREATOR_FEE_BPS: u16 = 300;
-
-/// Minimum DEX fee (in basis points) - 0.1%
 pub const MIN_DEX_FEE_BPS: u16 = 10;
-
-/// Maximum DEX fee (in basis points) - 5%
 pub const MAX_DEX_FEE_BPS: u16 = 500;
 
-/// Factory cell data layout
 #[repr(C)]
 #[derive(Debug)]
 pub struct FactoryData {
@@ -117,7 +100,6 @@ impl FactoryData {
     }
 }
 
-/// DEX Instance cell data layout
 #[repr(C)]
 #[derive(Debug)]
 pub struct DexInstanceData {
