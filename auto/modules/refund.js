@@ -31,7 +31,6 @@ const {
   getContractInfo,
 } = require("../utils/cli-helpers");
 
-
 async function fetchLaunchFromChain(launchId) {
   const launchpadInfo = getContractInfo("launchpad", "devnet");
   const launchTypeScript = launchpadInfo.typeScript;
@@ -87,13 +86,11 @@ async function fetchLaunchFromChain(launchId) {
   return null;
 }
 
-
 async function fetchRefundFromChain(launchId) {
   const launchpadInfo = getContractInfo("launchpad", "devnet");
   const launchTypeScript = launchpadInfo.typeScript;
 
   try {
-    
     const result = await rpcRequest("get_cells", [
       {
         script: {
@@ -112,7 +109,6 @@ async function fetchRefundFromChain(launchId) {
       return null;
     }
 
-    
     for (const cell of result.objects) {
       const dataHex = cell.data || cell.output_data;
       if (!dataHex || dataHex === "0x") continue;
@@ -124,7 +120,6 @@ async function fetchRefundFromChain(launchId) {
           .map((b) => parseInt(b, 16)),
       );
 
-      
       if (dataBytes.length === REFUND_DATA_SIZE) {
         try {
           const refundClaim = decodeRefundClaim(dataBytes);
@@ -152,7 +147,7 @@ async function claimRefund(options = {}) {
     colors.bright,
   );
   log(
-    "║  ATHEON - Claim Refund (Failed Launch)                     ║",
+    "║  Ohrex - Claim Refund (Failed Launch)                     ║",
     colors.bright,
   );
   log(
@@ -206,7 +201,6 @@ async function claimRefund(options = {}) {
 
     log("\n[Step 4/6] Checking launch status...", colors.blue);
 
-    
     const launchConfig = await fetchLaunchFromChain(launchId);
 
     if (!launchConfig) {
@@ -224,7 +218,6 @@ async function claimRefund(options = {}) {
       );
       log(`  Status: ${launchConfig.status}`, colors.cyan);
 
-      
       if (
         launchConfig.status !== STATUS_EXPIRED &&
         launchConfig.status !== STATUS_CANCELLED
@@ -255,7 +248,6 @@ async function claimRefund(options = {}) {
       );
     }
 
-    
     const refundClaim = await fetchRefundFromChain(launchId);
     if (refundClaim) {
       log(`  ✓ Refund claim found on-chain`, colors.green);
@@ -294,7 +286,6 @@ async function claimRefund(options = {}) {
     const txBuilder = new SimpleTxBuilder(RPC_URL, getSecpTxOptions("devnet"));
     const lockScript = await txBuilder.getLockScript(PRIVATE_KEY);
 
-    
     const outputs = [
       {
         lock: lockScript,
@@ -302,7 +293,6 @@ async function claimRefund(options = {}) {
       },
     ];
 
-    
     const leaves = receipts.map((r) =>
       createClaimLeaf({
         address: r.contributor,
@@ -311,20 +301,17 @@ async function claimRefund(options = {}) {
       }),
     );
 
-    
     const proofs = receipts.map((receipt, index) => {
       const { proof, root } = generateMerkleProof(leaves, index);
       return { receipt, proof, root, index };
     });
 
-    
     const {
       proof: merkleProof,
       root: merkleRoot,
       index: proofIndex,
     } = proofs[0];
 
-    
     const now = Math.floor(Date.now() / 1000);
     const newRefundClaim = createRefundClaim({
       merkleRoot,
@@ -332,11 +319,10 @@ async function claimRefund(options = {}) {
       curveId: receipts[0].curveId || "0x" + "00".repeat(32),
       totalRefundCkb: totalContributed,
       totalRefundTokens: 0n,
-      refundStartTime: BigInt(now - 3600), 
-      refundEndTime: BigInt(now + 86400 * 7), 
+      refundStartTime: BigInt(now - 3600),
+      refundEndTime: BigInt(now + 86400 * 7),
     });
 
-    
     const dataHex = ccc.hexFrom(encodeRefundClaim(newRefundClaim));
 
     log(`  ✓ Refund data encoded: ${REFUND_DATA_SIZE} bytes`, colors.green);
@@ -356,7 +342,6 @@ async function claimRefund(options = {}) {
       colors.cyan,
     );
 
-    
     const refundFile = path.join(
       __dirname,
       "..",
@@ -400,7 +385,6 @@ async function claimRefund(options = {}) {
 async function main() {
   return await claimRefund();
 }
-
 
 if (require.main === module) {
   main().catch((e) => {

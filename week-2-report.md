@@ -69,7 +69,7 @@ Progress: ████████░░░░░░░░░░░░ 40%
 
 ## 🛠️ Practical Progress
 
-### Project: ATHEON Protocol
+### Project: Ohrex Protocol
 
 > **A decentralized token launchpad with automatic DEX deployment on Nervos CKB**
 
@@ -150,7 +150,7 @@ contracts/
 ```
 Remaining:
 ┌─────────────────────────────────────────────────────────────┐
-│  1. 🎨 Build the UI for the ATHEON protocol                │
+│  1. 🎨 Build the UI for the Ohrex protocol                │
 │  2. 📚 Complete Summary 2 (CKB Academy)                    │
 └─────────────────────────────────────────────────────────────┘
 ```

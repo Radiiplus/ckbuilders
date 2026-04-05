@@ -25,7 +25,7 @@ async function main() {
     colors.bright,
   );
   log(
-    "║  ATHEON Protocol - Contract Deployment                    ║",
+    "║  Ohrex Protocol - Contract Deployment                    ║",
     colors.bright,
   );
   log(

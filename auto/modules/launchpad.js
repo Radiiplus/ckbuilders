@@ -7,7 +7,6 @@ const path = require("path");
 const { ccc } = require("@ckb-ccc/core");
 const { blake2b } = require("@noble/hashes/blake2.js");
 
-
 const sdk = require("../../sdk");
 const {
   colors,
@@ -31,13 +30,11 @@ function logStep(step, message) {
   log(`  [${step}] ${message}`, colors.cyan);
 }
 
-
 async function getBalance(lockScript) {
   try {
     let totalCapacity = 0n;
     let cellCount = 0;
 
-    
     const result = await rpcRequest("get_cells", [
       {
         script: {
@@ -49,7 +46,7 @@ async function getBalance(lockScript) {
         script_search_mode: "exact",
       },
       "asc",
-      "0x64", 
+      "0x64",
     ]);
 
     if (result.objects && result.objects.length > 0) {
@@ -80,19 +77,17 @@ function getLaunchpadScriptHash(network = "devnet") {
   return info.typeScript.codeHash;
 }
 
-
 function serializeScriptMolecule(script) {
   const codeHash = ccc.bytesFrom(ccc.hexFrom(script.codeHash));
   const hashType = script.hashType === "type" ? 0x01 : 0x00;
   const args = ccc.bytesFrom(ccc.hexFrom(script.args));
 
-  const totalSize = 8 + 32 + 1 + args.length; 
+  const totalSize = 8 + 32 + 1 + args.length;
   const bytes = new Uint8Array(totalSize);
 
-  
   const view = new DataView(bytes.buffer);
-  view.setUint32(0, totalSize, true); 
-  view.setUint32(4, 8 + 32 + 1, true); 
+  view.setUint32(0, totalSize, true);
+  view.setUint32(4, 8 + 32 + 1, true);
 
   bytes.set(codeHash, 8);
   bytes[40] = hashType;
@@ -101,12 +96,10 @@ function serializeScriptMolecule(script) {
   return bytes;
 }
 
-
 function computeScriptHash(script) {
   const serialized = serializeScriptMolecule(script);
   return ccc.hexFrom(blake2b(serialized, { dkLen: 32 }));
 }
-
 
 async function buildAndSendTx(outputs, outputsData, privateKey, cellDeps = []) {
   const RPC_URL = process.env.CKB_RPC_URL || "http://127.0.0.1:8114";
@@ -126,7 +119,6 @@ async function buildAndSendTx(outputs, outputsData, privateKey, cellDeps = []) {
   return result;
 }
 
-
 async function createLaunch(options = {}) {
   logSection("Create Token Launch");
 
@@ -137,12 +129,10 @@ async function createLaunch(options = {}) {
     throw new Error("CKB_GENESIS_PRIVKEY_0 not set in .env");
   }
 
-  
   const launchpadScriptHash = getLaunchpadScriptHash("devnet");
   const launchpadInfo = getContractInfo("launchpad", "devnet");
   logStep("1", `Launchpad script: ${launchpadScriptHash.slice(0, 18)}...`);
 
-  
   const launchpadDeploymentTx = launchpadInfo.deploymentTxHash;
   if (
     !launchpadDeploymentTx ||
@@ -155,25 +145,20 @@ async function createLaunch(options = {}) {
     );
   }
 
-  
   const client = new sdk.SimpleClient(RPC_URL, getSecpTxOptions("devnet"));
   const signer = new ccc.SignerCkbPrivateKey(client, PRIVATE_KEY);
   const addrObj = await signer.getAddressObjSecp256k1();
 
-  
   const creatorLockHash = computeScriptHash(addrObj.script);
 
-  
   const bump = BigInt(Math.floor(Date.now() / 1000));
   const launchId = sdk.generateLaunchId(creatorLockHash, bump);
   logStep("2", `Launch ID: ${launchId.slice(0, 18)}...`);
 
-  
   const now = Math.floor(Date.now() / 1000);
-  const startTime = BigInt(now + 60); 
-  const endTime = BigInt(now + 3600); 
+  const startTime = BigInt(now + 60);
+  const endTime = BigInt(now + 3600);
 
-  
   const config = sdk.createLaunchConfig(
     {
       launchId,
@@ -199,13 +184,9 @@ async function createLaunch(options = {}) {
   logStep("3", `Token: ${config.tokenName} (${config.tokenSymbol})`);
   logStep("4", `Target: ${(config.targetCkb / 100000000n).toString()} CKB`);
 
-  
   const encodedData = sdk.encodeLaunchConfig(config);
   const dataHex = ccc.hexFrom(encodedData);
 
-  
-  
-  
   const launchpadCellDep = {
     outPoint: {
       txHash: launchpadInfo.deploymentTxHash,
@@ -214,13 +195,12 @@ async function createLaunch(options = {}) {
     depType: "code",
   };
 
-  
   const minCapacity = sdk.calculateMinimumCapacity(
     addrObj.script,
     null,
     dataHex,
   );
-  const cellCapacity = minCapacity + 100_000_000n; 
+  const cellCapacity = minCapacity + 100_000_000n;
 
   const outputs = [
     {
@@ -236,7 +216,6 @@ async function createLaunch(options = {}) {
 
   logStep("6", `✓ Launch created: ${txHash.slice(0, 18)}...`);
 
-  
   const launchFile = path.join(
     __dirname,
     "..",
@@ -271,11 +250,9 @@ async function createLaunch(options = {}) {
   };
 }
 
-
 async function testSdkEncoding() {
   logSection("SDK Encoding/Decoding Tests");
 
-  
   const config = sdk.createLaunchConfig({
     launchId: "0x" + "aa".repeat(32),
     creatorLockHash: "0x" + "bb".repeat(32),
@@ -299,7 +276,6 @@ async function testSdkEncoding() {
   }
   logStep("1", "✓ Launch config roundtrip verified");
 
-  
   const curve = sdk.createCurveConfig({
     curveId: "0x" + "ee".repeat(32),
     launchId: config.launchId,
@@ -322,7 +298,6 @@ async function testSdkEncoding() {
   }
   logStep("2", "✓ Curve config roundtrip verified");
 
-  
   const now = Math.floor(Date.now() / 1000);
   const refundClaim = sdk.createRefundClaim({
     merkleRoot: "0x" + "11".repeat(32),
@@ -342,18 +317,15 @@ async function testSdkEncoding() {
   }
   logStep("3", "✓ Refund claim roundtrip verified");
 
-  
   const tokensReceived = sdk.calculateTokensForCkb(10000000000n, curve);
   logStep(
     "4",
     `100 CKB → ${Number(tokensReceived / 100000000n).toFixed(4)} tokens`,
   );
 
-  
   const impact = sdk.calculatePriceImpact(10000000000n, curve);
   logStep("5", `Price impact: ${Number(impact.impactPercent).toFixed(4)}%`);
 
-  
   const claims = [
     {
       address: "0x" + "aa".repeat(32),
@@ -377,7 +349,6 @@ async function testSdkEncoding() {
   }
   logStep("6", "✓ Merkle proof verified");
 
-  
   const vault = sdk.createVault("0x" + "ff".repeat(32), config.launchId);
   const updatedVault = sdk.addFees(vault, 1000000000n);
   const breakdown = sdk.getFeeBreakdown(updatedVault);
@@ -389,14 +360,13 @@ async function testSdkEncoding() {
   return { config, curve, refundClaim };
 }
 
-
 async function main() {
   log(
     "\n╔═══════════════════════════════════════════════════════════╗",
     colors.bright,
   );
   log(
-    "║  ATHEON Launchpad - Test Suite                            ║",
+    "║  Ohrex Launchpad - Test Suite                            ║",
     colors.bright,
   );
   log(
@@ -404,7 +374,6 @@ async function main() {
     colors.bright,
   );
 
-  
   log("Checking devnet...", colors.blue);
   try {
     await rpcRequest("get_tip_block_number");
@@ -415,10 +384,8 @@ async function main() {
   }
 
   try {
-    
     await testSdkEncoding();
 
-    
     const { launchId, txHash, config } = await createLaunch({
       tokenName: "TestToken",
       tokenSymbol: "TEST",
@@ -428,7 +395,6 @@ async function main() {
       priceMultiplierBps: 100,
     });
 
-    
     logSection("Test Summary");
     log("✓ SDK encoding/decoding roundtrips", colors.green);
     log("✓ Bonding curve calculations", colors.green);
@@ -453,7 +419,6 @@ async function main() {
     process.exit(1);
   }
 }
-
 
 if (require.main === module) {
   main().catch((err) => {

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The **Pool** contract implements a **Constant Product Automated Market Maker (AMM)** — the core trading engine of the ATHEON DEX ecosystem. Each pool represents a trading pair between two tokens (or CKB and a token) and maintains reserves, LP shares, and the invariant `k = reserve_a × reserve_b`.
+The **Pool** contract implements a **Constant Product Automated Market Maker (AMM)** — the core trading engine of the Ohrex DEX ecosystem. Each pool represents a trading pair between two tokens (or CKB and a token) and maintains reserves, LP shares, and the invariant `k = reserve_a × reserve_b`.
 
 ## Architecture
 

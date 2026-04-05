@@ -1,5 +1,3 @@
-
-
 require("dotenv").config({
   path: require("path").resolve(__dirname, "..", "..", ".env"),
 });
@@ -13,7 +11,7 @@ async function main() {
     colors.bright,
   );
   log(
-    "║  ATHEON - Check Pending Transactions                     ║",
+    "║  Ohrex - Check Pending Transactions                     ║",
     colors.bright,
   );
   log(

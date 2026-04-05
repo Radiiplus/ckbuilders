@@ -17,7 +17,7 @@ async function main() {
     colors.bright,
   );
   log(
-    "║  ATHEON - Full Protocol Initialization                   ║",
+    "║  Ohrex - Full Protocol Initialization                   ║",
     colors.bright,
   );
   log(

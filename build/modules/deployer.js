@@ -71,13 +71,12 @@ function rpcRequest(method, params = []) {
 function getBinaryPath(contractName) {
   const baseDir = path.join(__dirname, "..", "..", "contracts", contractName);
 
-  
   const binaryNames = {
     factory: "dex-factory",
     pool: "dex-pool",
     registry: "dex-registry",
     dex: "dex-instance",
-    launchpad: "atheon-launchpad",
+    launchpad: "ohrex-launchpad",
   };
   const binaryName = binaryNames[contractName] || contractName;
 
@@ -128,7 +127,7 @@ async function deployContract(contractName, deployerWallet) {
       pool: "dex-pool",
       registry: "dex-registry",
       dex: "dex-instance",
-      launchpad: "atheon-launchpad",
+      launchpad: "ohrex-launchpad",
     };
     const binaryName = binaryNames[contractName] || contractName;
     console.log(
@@ -235,7 +234,6 @@ async function deployAllContracts(wallet) {
     const result = await deployContract(contract, wallet);
     results.push(result);
 
-    
     if (!result.success) {
       console.log(
         `  ⚠️  ${contract} deployment skipped (binary not found - needs cargo build --release)`,

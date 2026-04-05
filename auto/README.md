@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `auto/` directory contains **interactive CLI modules** that exercise the full ATHEON protocol on a running devnet. Think of it as the **user-facing layer** — where DEX operators create exchanges, contributors fund launches, and LPs claim their tokens.
+The `auto/` directory contains **interactive CLI modules** that exercise the full Ohrex protocol on a running devnet. Think of it as the **user-facing layer** — where DEX operators create exchanges, contributors fund launches, and LPs claim their tokens.
 
 Unlike the `build/` scripts (which set up infrastructure), the `auto/` modules **interact with deployed contracts** to perform real protocol operations.
 

@@ -8,7 +8,7 @@ const RPC_URL = process.env.CKB_RPC_URL || "http://127.0.0.1:8114";
 const PRIVATE_KEY = process.env.CKB_GENESIS_PRIVKEY_0;
 
 async function test() {
-  console.log("Testing ATHEON SDK...\n");
+  console.log("Testing Ohrex SDK...\n");
 
   try {
     console.log("1. Testing FeeEstimator...");

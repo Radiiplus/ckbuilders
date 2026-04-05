@@ -71,7 +71,7 @@ Progress: ████████░░░░░░░░░░░░ 40%
 
 ## 🛠️ Practical Progress
 
-### Project: ATHEON Protocol
+### Project: Ohrex Protocol
 
 > **A decentralized token launchpad with automatic DEX deployment on Nervos CKB**
 

@@ -22,7 +22,6 @@ const {
   getContractInfo,
 } = require("../utils/cli-helpers");
 
-
 async function fetchCurveFromChain(curveId) {
   const dexInfo = getContractInfo("dex", "devnet");
   const curveTypeScript = dexInfo.typeScript;
@@ -30,7 +29,7 @@ async function fetchCurveFromChain(curveId) {
   try {
     const result = await rpcRequest("get_live_cell", [
       {
-        txHash: curveId, 
+        txHash: curveId,
         index: "0x0",
         withData: true,
       },
@@ -60,32 +59,29 @@ async function fetchCurveFromChain(curveId) {
   return null;
 }
 
-
 async function searchCurveByLaunchId(launchId, curveIdHint) {
   const dexInfo = getContractInfo("dex", "devnet");
   const curveTypeScript = dexInfo.typeScript;
 
   try {
-    
     const result = await rpcRequest("get_cells", [
       {
         script: {
           code_hash: curveTypeScript.codeHash,
           hash_type: curveTypeScript.hashType,
-          args: launchId.slice(0, 42), 
+          args: launchId.slice(0, 42),
         },
         script_type: "type",
         script_search_mode: "prefix",
       },
       "asc",
-      "0x10", 
+      "0x10",
     ]);
 
     if (!result.objects || result.objects.length === 0) {
       return null;
     }
 
-    
     for (const cell of result.objects) {
       const dataHex = cell.data || cell.output_data;
       if (!dataHex || dataHex === "0x") continue;
@@ -102,7 +98,6 @@ async function searchCurveByLaunchId(launchId, curveIdHint) {
       try {
         const curveData = decodeCurveData(dataBytes);
 
-        
         if (!curveIdHint || curveData.curveId === curveIdHint) {
           return curveData;
         }
@@ -123,7 +118,7 @@ async function contributeToCurve(options = {}) {
     colors.bright,
   );
   log(
-    "║  ATHEON - Contribute to Bonding Curve                    ║",
+    "║  Ohrex - Contribute to Bonding Curve                    ║",
     colors.bright,
   );
   log(
@@ -142,7 +137,7 @@ async function contributeToCurve(options = {}) {
     log("\n[Step 2/5] Loading curve information...", colors.blue);
     const curveId = options.curveId;
     const launchId = options.launchId;
-    const contributionCkb = BigInt(options.contributionCkb || 10000000000n); 
+    const contributionCkb = BigInt(options.contributionCkb || 10000000000n);
 
     if (!curveId || !launchId) {
       log("  ✗ Curve ID and Launch ID required", colors.red);
@@ -156,7 +151,6 @@ async function contributeToCurve(options = {}) {
       colors.cyan,
     );
 
-    
     log("\n[Step 2.5/5] Fetching curve data from chain...", colors.blue);
     let curve = await searchCurveByLaunchId(launchId, curveId);
 
@@ -165,7 +159,7 @@ async function contributeToCurve(options = {}) {
         "  ⚠️  Curve not found on-chain, using provided parameters",
         colors.yellow,
       );
-      
+
       curve = {
         curveId,
         launchId,
@@ -175,7 +169,7 @@ async function contributeToCurve(options = {}) {
         priceMultiplierBps: options.priceMultiplierBps || 100,
         targetCkb: BigInt(options.targetCkb || 100000000000n),
         currentCkb: BigInt(options.currentCkb || 0n),
-        status: options.curveStatus || 1, 
+        status: options.curveStatus || 1,
       };
       log(`  Using curve from options:`, colors.cyan);
     } else {
@@ -202,14 +196,12 @@ async function contributeToCurve(options = {}) {
     const txBuilder = new SimpleTxBuilder(RPC_URL, getSecpTxOptions("devnet"));
     const lockScript = await txBuilder.getLockScript(PRIVATE_KEY);
 
-    
     const signer = new ccc.SignerCkbPrivateKey({ rpc: {} }, PRIVATE_KEY);
     const pubKey = signer.publicKey;
     const pubKeyHash = ccc.hexFrom(
       ccc.hashCkb(ccc.bytesFrom(pubKey)).slice(0, 42),
     );
 
-    
     const updatedCurve = {
       curveId: curve.curveId,
       launchId: curve.launchId,
@@ -220,7 +212,7 @@ async function contributeToCurve(options = {}) {
       startTime: curve.startTime || 0n,
       endTime: curve.endTime || 0n,
       launchOffsetBlocks: curve.launchOffsetBlocks || 0n,
-      targetCkb: curve.targetCkb || 100000000000n, 
+      targetCkb: curve.targetCkb || 100000000000n,
       currentCkb: (curve.currentCkb || 0n) + contributionCkb,
       tokensAllocated: curve.tokensAllocated,
       tokensSold: curve.tokensSold + tokensReceived,
@@ -231,10 +223,8 @@ async function contributeToCurve(options = {}) {
       initialPriceScaled: curve.initialPriceScaled,
     };
 
-    
     const curveDataHex = ccc.hexFrom(encodeCurveData(updatedCurve));
 
-    
     const curveCellCapacity = calculateMinimumCapacity(
       lockScript,
       null,
@@ -254,11 +244,10 @@ async function contributeToCurve(options = {}) {
       colors.cyan,
     );
 
-    
     const outputs = [
       {
         lock: lockScript,
-        capacity: curveCellCapacity + 100_000_000n, 
+        capacity: curveCellCapacity + 100_000_000n,
       },
     ];
 
@@ -275,7 +264,6 @@ async function contributeToCurve(options = {}) {
     log(`    Curve cell created with DEX type script`, colors.cyan);
     log(`    Tokens: ${tokensReceived.toString()}`, colors.cyan);
 
-    
     const receiptFile = saveContributionReceipt(
       {
         txHash,
@@ -309,7 +297,6 @@ async function contributeToCurve(options = {}) {
 async function main() {
   return await contributeToCurve();
 }
-
 
 if (require.main === module) {
   main().catch((e) => {

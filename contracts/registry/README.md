@@ -2,7 +2,7 @@
 
 ## Overview
 
-The **Registry** is the **name service and governance layer** for the ATHEON DEX ecosystem. It manages DEX name reservations, tracks DEX activity, and controls access to the launchpad system. DEX operators must register through the Registry to gain launchpad privileges and be discoverable by users.
+The **Registry** is the **name service and governance layer** for the Ohrex DEX ecosystem. It manages DEX name reservations, tracks DEX activity, and controls access to the launchpad system. DEX operators must register through the Registry to gain launchpad privileges and be discoverable by users.
 
 ## Architecture
 

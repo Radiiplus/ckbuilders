@@ -1,5 +1,5 @@
 {
-  "name": "atheon-protocol",
+  "name": "ohrex-protocol",
   "version": "0.1.0",
   "description": "Decentralized DEX Factory with Auto-Liquidity Deployment on Nervos CKB",
   "main": "build/setup.js",
@@ -25,7 +25,7 @@
     "factory",
     "launchpad",
     "defi",
-    "atheon"
+    "ohrex"
   ],
   "author": "",
   "license": "Apache-2.0",

@@ -1,5 +1,5 @@
 [package]
-name = "atheon-launchpad"
+name = "ohrex-launchpad"
 version = "0.1.0"
 edition = "2021"
 
@@ -18,5 +18,5 @@ codegen-units = 1
 panic = "abort"
 
 [[bin]]
-name = "atheon-launchpad"
+name = "ohrex-launchpad"
 path = "src/main.rs"

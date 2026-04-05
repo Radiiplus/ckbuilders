@@ -1,8 +1,8 @@
-# ATHEON SDK
+# Ohrex SDK
 
 ## Overview
 
-The **ATHEON SDK** is a JavaScript/Node.js library that provides the **off-chain counterpart** to the on-chain CKB contracts. It handles transaction building, data encoding/decoding, fee estimation, cryptographic proofs, and bonding curve calculations — everything needed to interact with the ATHEON protocol from a client, CLI, or indexer.
+The **Ohrex SDK** is a JavaScript/Node.js library that provides the **off-chain counterpart** to the on-chain CKB contracts. It handles transaction building, data encoding/decoding, fee estimation, cryptographic proofs, and bonding curve calculations — everything needed to interact with the Ohrex protocol from a client, CLI, or indexer.
 
 ## Installation
 

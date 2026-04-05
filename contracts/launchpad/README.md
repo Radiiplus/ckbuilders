@@ -2,7 +2,7 @@
 
 ## Overview
 
-The **Launchpad** is the most complex contract in the ATHEON ecosystem. It implements a **bonding curve-based token launch system** with built-in refund mechanisms, Merkle proof-based LP token distribution, fee vaults, and DEX operator staking. It enables fair token launches where contributors buy into a bonding curve, and if the target is met, LP tokens are distributed proportionally.
+The **Launchpad** is the most complex contract in the Ohrex ecosystem. It implements a **bonding curve-based token launch system** with built-in refund mechanisms, Merkle proof-based LP token distribution, fee vaults, and DEX operator staking. It enables fair token launches where contributors buy into a bonding curve, and if the target is met, LP tokens are distributed proportionally.
 
 ## Security Model: Off-Chain Time Coordination
 

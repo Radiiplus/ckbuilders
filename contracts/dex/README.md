@@ -2,7 +2,7 @@
 
 ## Overview
 
-The **DEX** contract represents an individual decentralized exchange instance within the ATHEON ecosystem. Each DEX is created by the Factory contract and operates independently, managing its own pools, trading fees, and activity tracking. A DEX is owned by a single entity (the DEX operator) who can create pools, record trades, and update DEX settings.
+The **DEX** contract represents an individual decentralized exchange instance within the Ohrex ecosystem. Each DEX is created by the Factory contract and operates independently, managing its own pools, trading fees, and activity tracking. A DEX is owned by a single entity (the DEX operator) who can create pools, record trades, and update DEX settings.
 
 ## Architecture
 

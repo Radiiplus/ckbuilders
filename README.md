@@ -1,4 +1,4 @@
-# ATHEON Protocol
+# Ohrex Protocol
 
 > **A decentralized token launchpad with automatic DEX deployment on Nervos CKB**
 
@@ -10,11 +10,11 @@
 
 ## Overview
 
-ATHEON is a **complete DeFi protocol** built on Nervos CKB that enables anyone to launch tokens, bootstrap liquidity via bonding curves, and automatically deploy trading infrastructure — all on-chain. It combines a DEX factory, AMM pools, a token launchpad, and a registry system into a unified, self-bootstrapping ecosystem.
+Ohrex is a **complete DeFi protocol** built on Nervos CKB that enables anyone to launch tokens, bootstrap liquidity via bonding curves, and automatically deploy trading infrastructure — all on-chain. It combines a DEX factory, AMM pools, a token launchpad, and a registry system into a unified, self-bootstrapping ecosystem.
 
 ### Core Concept
 
-Traditional token launches require manual setup: deploy a token, create a pool, seed liquidity, list on a DEX. ATHEON automates this entire flow:
+Traditional token launches require manual setup: deploy a token, create a pool, seed liquidity, list on a DEX. Ohrex automates this entire flow:
 
 1. **Launchpad** — Creators configure a token sale with a bonding curve (soft cap, hard cap, time window)
 2. **Bonding Curve** — Contributors deposit CKB; price increases as more capital enters

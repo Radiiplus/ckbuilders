@@ -15,13 +15,10 @@ const {
   PRICE_MULTIPLIER_PREMIUM,
 } = require("../../sdk");
 
-
 async function getActiveCurves(launchId) {
   log("  Scanning on-chain for curve cells...", colors.cyan);
 
   try {
-    
-    
     const PRIVATE_KEY = process.env.CKB_GENESIS_PRIVKEY_0;
     if (!PRIVATE_KEY) {
       log("  ⚠️  CKB_GENESIS_PRIVKEY_0 not set", colors.yellow);
@@ -36,8 +33,6 @@ async function getActiveCurves(launchId) {
 
     log(`  Scanning address: ${pubKeyHash}`, colors.cyan);
 
-    
-    
     const result = await rpcRequest("get_cells", [
       {
         script: {
@@ -50,7 +45,7 @@ async function getActiveCurves(launchId) {
         script_search_mode: "exact",
       },
       "asc",
-      "0x200", 
+      "0x200",
     ]);
 
     if (!result.objects || result.objects.length === 0) {
@@ -66,7 +61,6 @@ async function getActiveCurves(launchId) {
     const curves = [];
     for (const cell of result.objects) {
       try {
-        
         const dataHex = cell.data || cell.output_data;
         if (!dataHex || dataHex === "0x") continue;
 
@@ -77,17 +71,13 @@ async function getActiveCurves(launchId) {
             .map((b) => parseInt(b, 16)),
         );
 
-        
         if (dataBytes.length !== DCURVE_DATA_SIZE) continue;
 
         const curveData = decodeCurveData(dataBytes);
 
-        
         if (curveData.launchId !== launchId) continue;
 
-        
         if (curveData.status === 1) {
-          
           curves.push({
             curveId: curveData.curveId,
             launchId: curveData.launchId,
@@ -102,7 +92,6 @@ async function getActiveCurves(launchId) {
           });
         }
       } catch (e) {
-        
         continue;
       }
     }
@@ -121,7 +110,7 @@ async function trackArbitrage(options = {}) {
     colors.bright,
   );
   log(
-    "║  ATHEON - Arbitrage Tracker                                ║",
+    "║  Ohrex - Arbitrage Tracker                                ║",
     colors.bright,
   );
   log(
@@ -185,7 +174,6 @@ async function trackArbitrage(options = {}) {
         const opp = calculateArbitrageOpportunity(curves[i], curves[j]);
 
         if (opp.profitBps > 50n) {
-          
           opportunitiesFound++;
 
           const profitPercent = Number(opp.profitBps) / 100;
@@ -220,7 +208,6 @@ async function trackArbitrage(options = {}) {
       log(`  ✓ Found ${opportunitiesFound} opportunity(ies)!`, colors.green);
     }
 
-    
     log("\n" + "═".repeat(50), colors.bright);
     log("  Summary:", colors.bright);
     log("  " + "─".repeat(50), colors.cyan);
@@ -243,11 +230,9 @@ async function trackArbitrage(options = {}) {
 }
 
 async function main() {
-  
   const launchId = process.argv[2] || "0x" + "11".repeat(32);
   return await trackArbitrage({ launchId });
 }
-
 
 if (require.main === module) {
   main().catch((e) => {

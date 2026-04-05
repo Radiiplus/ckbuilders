@@ -61,7 +61,7 @@ async function main() {
     colors.bright,
   );
   log(
-    "║  ATHEON - Initialize Registry Contract                   ║",
+    "║  Ohrex - Initialize Registry Contract                   ║",
     colors.bright,
   );
   log(
@@ -116,7 +116,7 @@ async function main() {
       totalFeesCollected: 0n,
       manualLaunchFeeBps: MANUAL_LAUNCH_FEE_BPS,
       autoLaunchFeeBps: AUTO_LAUNCH_FEE_BPS,
-      activityCheckPeriod: 2592000n, 
+      activityCheckPeriod: 2592000n,
       minTradeVolumeCkb: 10000n,
       minTradeCount: 5n,
       bump: BigInt(Date.now()),
@@ -131,15 +131,13 @@ async function main() {
     const txBuilder = new SimpleTxBuilder(RPC_URL, getSecpTxOptions("devnet"));
     const lockScript = await txBuilder.getLockScript(PRIVATE_KEY);
 
-    
     const outputs = [
       {
         lock: lockScript,
-        capacity: 1000n * 10n ** 8n, 
+        capacity: 1000n * 10n ** 8n,
       },
     ];
 
-    
     const feeEstimator = new FeeEstimator(RPC_URL);
     const mockInputs = [
       { previousOutput: { txHash: "0x" + "00".repeat(64), index: "0x0" } },
@@ -175,7 +173,6 @@ async function main() {
     log(`    Transaction: ${txHash}`, colors.cyan);
     log(`    Owner: ${pubKeyHash}`, colors.cyan);
 
-    
     const registryTxFile = path.join(
       __dirname,
       "..",
@@ -199,7 +196,6 @@ async function main() {
 
     return { txHash, ownerLockHash: pubKeyHash };
   } catch (e) {
-    
     throw e;
   }
 }
@@ -207,7 +203,6 @@ async function main() {
 async function runRegistryInit() {
   return await main();
 }
-
 
 if (require.main === module) {
   main();

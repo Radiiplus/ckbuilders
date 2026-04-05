@@ -64,7 +64,7 @@ async function deployRegistry() {
     colors.bright,
   );
   log(
-    "║  ATHEON - Deploy Registry Contract                       ║",
+    "║  Ohrex - Deploy Registry Contract                       ║",
     colors.bright,
   );
   log(
@@ -81,7 +81,6 @@ async function deployRegistry() {
       return;
     }
 
-    
     const registryBinary = path.join(
       __dirname,
       "..",
@@ -117,7 +116,6 @@ async function deployRegistry() {
 
     log("\n[Step 3/4] Deploying registry cell...", colors.blue);
 
-    
     const { SimpleTxBuilder } = require("../sdk");
     const txBuilder = new SimpleTxBuilder(RPC_URL);
     const lockScript = await txBuilder.getLockScript(PRIVATE_KEY);
@@ -131,7 +129,7 @@ async function deployRegistry() {
     )) {
       utxos.push(cell);
       totalCapacity += BigInt(cell.cellOutput.capacity);
-      if (totalCapacity > BigInt(1000 * 1e8)) break; 
+      if (totalCapacity > BigInt(1000 * 1e8)) break;
     }
 
     if (utxos.length === 0) {
@@ -139,20 +137,18 @@ async function deployRegistry() {
       return;
     }
 
-    
     const registryCell = {
       cellOutput: {
-        capacity: BigInt(1000 * 1e8), 
+        capacity: BigInt(1000 * 1e8),
         lock: lockScript,
         type: {
           codeHash: ccc.hashCkb(binary),
           hashType: "type",
         },
       },
-      outputData: ccc.hexFrom(new Uint8Array()), 
+      outputData: ccc.hexFrom(new Uint8Array()),
     };
 
-    
     const tx = {
       version: "0x00000000",
       cellDeps: [
@@ -175,7 +171,6 @@ async function deployRegistry() {
       witnesses: [],
     };
 
-    
     const signer = new ccc.SignerCkbPrivateKey(txBuilder.client, PRIVATE_KEY);
     const preparedTx = await signer.prepareTransaction(tx);
     const signedTx = await signer.signTransaction(preparedTx);
@@ -185,11 +180,9 @@ async function deployRegistry() {
     log(`    Transaction: ${txHash}`, colors.cyan);
     log(`    Type Script Hash: 0x${ccc.hexFrom(binaryHash)}`, colors.cyan);
 
-    
     log("\n[Step 4/4] Waiting for confirmation...", colors.blue);
     await new Promise((resolve) => setTimeout(resolve, 5000));
 
-    
     const deploymentsFile = path.join(
       __dirname,
       "..",

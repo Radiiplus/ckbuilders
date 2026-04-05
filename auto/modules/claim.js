@@ -25,32 +25,29 @@ const {
   getContractInfo,
 } = require("../utils/cli-helpers");
 
-
 async function fetchLaunchFromChain(launchId) {
   const launchpadInfo = getContractInfo("launchpad", "devnet");
   const launchTypeScript = launchpadInfo.typeScript;
 
   try {
-    
     const result = await rpcRequest("get_cells", [
       {
         script: {
           code_hash: launchTypeScript.codeHash,
           hash_type: launchTypeScript.hashType,
-          args: launchId.slice(0, 42), 
+          args: launchId.slice(0, 42),
         },
         script_type: "type",
         script_search_mode: "prefix",
       },
       "asc",
-      "0x0a", 
+      "0x0a",
     ]);
 
     if (!result.objects || result.objects.length === 0) {
       return null;
     }
 
-    
     for (const cell of result.objects) {
       const dataHex = cell.data || cell.output_data;
       if (!dataHex || dataHex === "0x") continue;
@@ -67,7 +64,6 @@ async function fetchLaunchFromChain(launchId) {
       try {
         const launchConfig = decodeLaunchConfig(dataBytes);
 
-        
         if (launchConfig.launchId === launchId) {
           return launchConfig;
         }
@@ -85,15 +81,12 @@ async function fetchLaunchFromChain(launchId) {
   return null;
 }
 
-
 function calculateLPTokens(receipts, launchInfo) {
   let totalTokens = 0n;
   for (const receipt of receipts) {
     totalTokens += BigInt(receipt.tokensReceived);
   }
 
-  
-  
   return totalTokens;
 }
 
@@ -103,7 +96,7 @@ async function claimLP(options = {}) {
     colors.bright,
   );
   log(
-    "║  ATHEON - Claim LP Tokens                                  ║",
+    "║  Ohrex - Claim LP Tokens                                  ║",
     colors.bright,
   );
   log(
@@ -163,7 +156,6 @@ async function claimLP(options = {}) {
 
     log("\n[Step 4/6] Checking launch status...", colors.blue);
 
-    
     const launchConfig = await fetchLaunchFromChain(launchId);
 
     if (!launchConfig) {
@@ -181,7 +173,6 @@ async function claimLP(options = {}) {
       );
       log(`  Status: ${launchConfig.status}`, colors.cyan);
 
-      
       if (launchConfig.status !== STATUS_SUCCESS) {
         const statusNames = {
           [STATUS_PENDING]: "PENDING",
@@ -206,13 +197,11 @@ async function claimLP(options = {}) {
     const txBuilder = new SimpleTxBuilder(RPC_URL, getSecpTxOptions("devnet"));
     const lockScript = await txBuilder.getLockScript(PRIVATE_KEY);
 
-    
-    
     const poolInfo = getContractInfo("pool", "devnet");
     const lpTokenTypeScript = {
       codeHash: poolInfo.typeScript.codeHash,
       hashType: poolInfo.typeScript.hashType,
-      args: launchId, 
+      args: launchId,
     };
 
     log(
@@ -220,14 +209,13 @@ async function claimLP(options = {}) {
       colors.green,
     );
 
-    
     const dataHex = ccc.hexFrom(ccc.numLeToBytes(totalTokens, 16));
     const minCapacity = calculateMinimumCapacity(
       lockScript,
       lpTokenTypeScript,
       dataHex,
     );
-    const cellCapacity = minCapacity + 100_000_000n; 
+    const cellCapacity = minCapacity + 100_000_000n;
 
     const outputs = [
       {
@@ -237,7 +225,6 @@ async function claimLP(options = {}) {
       },
     ];
 
-    
     const lpTokenAmount = totalTokens;
 
     log("\n[Step 6/6] Sending transaction...", colors.blue);
@@ -252,7 +239,6 @@ async function claimLP(options = {}) {
     log(`    Transaction: ${txHash}`, colors.cyan);
     log(`    LP tokens: ${(totalTokens / 100000000n).toString()}`, colors.cyan);
 
-    
     const claimFile = path.join(
       __dirname,
       "..",
@@ -296,7 +282,6 @@ async function claimLP(options = {}) {
 async function main() {
   return await claimLP();
 }
-
 
 if (require.main === module) {
   main().catch((e) => {

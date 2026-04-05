@@ -24,7 +24,7 @@ async function main() {
     colors.bright,
   );
   log(
-    "║  ATHEON Protocol - Devnet Setup                           ║",
+    "║  Ohrex Protocol - Devnet Setup                           ║",
     colors.bright,
   );
   log(

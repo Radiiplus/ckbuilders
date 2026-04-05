@@ -2,7 +2,7 @@
 
 ## Overview
 
-The **Factory** is the root contract of the ATHEON DEX ecosystem. It acts as a **registry and fee governor** for all DEX instances created under it. Every DEX must be created through the Factory, which enforces fee bounds, collects a cut of trading fees, and charges a creation fee.
+The **Factory** is the root contract of the Ohrex DEX ecosystem. It acts as a **registry and fee governor** for all DEX instances created under it. Every DEX must be created through the Factory, which enforces fee bounds, collects a cut of trading fees, and charges a creation fee.
 
 ## Architecture
 

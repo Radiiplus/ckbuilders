@@ -38,7 +38,7 @@ async function main() {
     colors.bright,
   );
   log(
-    "║  ATHEON - Create DEX Instance                              ║",
+    "║  Ohrex - Create DEX Instance                              ║",
     colors.bright,
   );
   log(
@@ -92,7 +92,6 @@ async function main() {
     const dexId = generateDexId(factoryScriptHash, pubKeyHash, bump);
     const dexNameHash = hashDexName(DEX_NAME);
 
-    
     const descriptionHash = ccc.hexFrom(
       blake2b(Buffer.from(DEX_NAME, "utf-8"), { dkLen: 32 }),
     );
@@ -110,7 +109,7 @@ async function main() {
       dexNameHash,
       descriptionHash,
       factoryScriptHash,
-      registryEntryHash: "0x" + "00".repeat(32), 
+      registryEntryHash: "0x" + "00".repeat(32),
       poolCount: 0n,
       totalVolume: 0n,
       totalTrades: 0n,
@@ -142,7 +141,6 @@ async function main() {
     log(`    DEX ID: ${dexId}`, colors.cyan);
     log(`    Owner: ${pubKeyHash}`, colors.cyan);
 
-    
     const dexTxFile = path.join(
       __dirname,
       "..",
@@ -187,7 +185,6 @@ async function main() {
 async function runDexCreate() {
   return await main();
 }
-
 
 if (require.main === module) {
   main();
