@@ -55,10 +55,14 @@ ateon/
 
 | Component | README | Purpose |
 |-----------|--------|---------|
-| **Contracts** | [`contracts/README.md`](contracts/README.md) | On-chain RISC-V contracts: Factory, DEX, Pool, Registry, Launchpad |
-| **SDK** | [`sdk/README.md`](sdk/README.md) | JavaScript SDK: Transaction building, encoding, fee estimation, Merkle proofs |
-| **Build** | [`build/README.md`](build/README.md) | Infrastructure: Devnet setup, wallet management, contract deployment |
-| **Auto** | [`auto/README.md`](auto/README.md) | Automation CLI: Token launches, contributions, LP claims, refunds, arbitrage |
+| **Factory** | [`contracts/factory/README.md`](contracts/factory/README.md) | DEX factory: creation, fee governance |
+| **DEX** | [`contracts/dex/README.md`](contracts/dex/README.md) | Individual exchange instance |
+| **Pool** | [`contracts/pool/README.md`](contracts/pool/README.md) | AMM pool (x*y=k), LP tokens |
+| **Registry** | [`contracts/registry/README.md`](contracts/registry/README.md) | DEX name service & activity tracking |
+| **Launchpad** | [`contracts/launchpad/README.md`](contracts/launchpad/README.md) | Bonding curve launches, refunds |
+| **SDK** | [`sdk/README.md`](sdk/README.md) | JavaScript SDK: tx building, encoding, fee estimation, Merkle proofs |
+| **Build** | [`build/README.md`](build/README.md) | Infrastructure: devnet setup, wallet management, contract deployment |
+| **Auto** | [`auto/README.md`](auto/README.md) | Automation CLI: launches, contributions, LP claims, refunds, arbitrage |
 
 ---
 
