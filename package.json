@@ -15,7 +15,11 @@
     "build:registry": "cd contracts/registry && cargo build --release --target riscv64imac-unknown-none-elf",
     "build:launchpad": "cd contracts/launchpad && cargo build --release --target riscv64imac-unknown-none-elf",
     "build": "npm run build:factory && npm run build:pool && npm run build:registry",
-    "get-factory-hash": "node auto/main.js"
+    "get-factory-hash": "node auto/main.js",
+    "dev:frontend": "cd public && npm run dev",
+    "build:frontend": "cd public && npm run build",
+    "preview:frontend": "cd public && npm run preview",
+    "server": "cd server && node index.js"
   },
   "keywords": [
     "nervos",
@@ -31,7 +35,10 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@ckb-ccc/core": "^1.12.5",
+    "@noble/curves": "^1.8.1",
     "@noble/hashes": "^2.0.1",
-    "dotenv": "^17.3.1"
+    "cors": "^2.8.5",
+    "dotenv": "^17.3.1",
+    "express": "^5.1.0"
   }
 }

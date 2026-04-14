@@ -134,6 +134,8 @@ const {
   generateBatchProofs,
 } = require("./refund");
 
+const vault = require("./vault");
+
 const {
   serializeClaim,
   encodeProof,
@@ -259,6 +261,33 @@ module.exports = {
   buildWitnessData,
   determineRefundStatus,
   isRefundActive,
+
+  // Vault
+  VAULT_DATA_SIZE: vault.VAULT_DATA_SIZE,
+  VAULT_SOURCE_DEPOSIT: vault.VAULT_SOURCE_DEPOSIT,
+  VAULT_SOURCE_LAUNCH: vault.VAULT_SOURCE_LAUNCH,
+  VAULT_SOURCE_FEE: vault.VAULT_SOURCE_FEE,
+  VAULT_OP_INITIALIZE: vault.VAULT_OP_INITIALIZE,
+  VAULT_OP_DEPOSIT: vault.VAULT_OP_DEPOSIT,
+  VAULT_OP_WITHDRAW: vault.VAULT_OP_WITHDRAW,
+  VAULT_OP_DISTRIBUTE: vault.VAULT_OP_DISTRIBUTE,
+  VAULT_OP_COLLECT: vault.VAULT_OP_COLLECT,
+  VAULT_OP_SEED_POOL: vault.VAULT_OP_SEED_POOL,
+  VAULT_OP_UPDATE: vault.VAULT_OP_UPDATE,
+  DEFAULT_VAULT_CONFIG: vault.DEFAULT_VAULT_CONFIG,
+  TYPE_ID_SIZE: vault.TYPE_ID_SIZE,
+  encodeVaultData: vault.encodeVaultData,
+  decodeVaultData: vault.decodeVaultData,
+  createVaultConfig: vault.createVaultConfig,
+  calculateSharePrice: vault.calculateSharePrice,
+  calculateMintShares: vault.calculateMintShares,
+  calculateBurnShares: vault.calculateBurnShares,
+  getAvailableValue: vault.getAvailableValue,
+  getFeeBreakdown: vault.getFeeBreakdown,
+  isInitialized: vault.isInitialized,
+  getRegisteredContracts: vault.getRegisteredContracts,
+  formatVaultCkb: vault.formatCkb,
+  formatVaultCkbDecimal: vault.formatCkbDecimal,
 
   hashPair,
   generateMerkleRoot,

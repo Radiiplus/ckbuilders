@@ -1,0 +1,16 @@
+#![allow(dead_code)]
+
+pub const SUCCESS: u8 = 0;
+pub const ERROR_INVALID_ARGUMENT: u8 = 1;
+pub const ERROR_INVALID_DATA_LENGTH: u8 = 2;
+pub const ERROR_UNAUTHORIZED: u8 = 16;
+pub const ERROR_INVALID_OWNER: u8 = 17;
+pub const ERROR_INSUFFICIENT_BALANCE: u8 = 20;
+pub const ERROR_INSUFFICIENT_INPUT: u8 = 21;
+pub const ERROR_INVALID_STATE: u8 = 22;
+pub const ERROR_OVERFLOW: u8 = 23;
+pub const ERROR_DEPOSIT_TOO_SMALL: u8 = 24;
+pub const ERROR_VAULT_NOT_INITIALIZED: u8 = 25;
+pub const ERROR_INVALID_OPERATION: u8 = 34;
+pub const ERROR_WITHDRAWAL_PENDING: u8 = 35;
+pub const ERROR_INVALID_SCRIPT_HASH: u8 = 36;

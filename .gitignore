@@ -47,3 +47,10 @@ archive/
 .qwen/
 .threadbridge/
 -p/
+
+vault-final-test.log
+vault-test-aligned.log
+
+public/
+server/
+.qwen

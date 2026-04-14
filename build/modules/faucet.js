@@ -87,14 +87,29 @@ async function getBalance(address, retries = 3) {
         { encoding: "utf-8", timeout: 30000 },
       );
 
-      const match = result.match(/Balance:\s*([\d.]+)\s*CKB/i);
+      // Try multiple regex patterns to match different offckb output formats
+      const match =
+        result.match(/Balance:\s*([\d.]+)\s*CKB/i) ||
+        result.match(/([\d.]+)\s*CKB/) ||
+        result.match(/total:\s*([\d.]+)/i);
+
       if (match) {
         const ckbAmount = parseFloat(match[1]);
-        return BigInt(Math.floor(ckbAmount * 100000000));
+        if (!isNaN(ckbAmount)) {
+          return BigInt(Math.floor(ckbAmount * 100000000));
+        }
+      }
+
+      // Log the raw output for debugging if parsing fails
+      if (i === 0) {
+        console.log(`  [DEBUG] Balance output: ${result.trim().slice(0, 200)}`);
       }
 
       return 0n;
     } catch (e) {
+      if (i === 0) {
+        console.log(`  [DEBUG] Balance command error: ${e.message}`);
+      }
       if (i === retries - 1) {
         console.error("Error getting balance:", e.message);
         return 0n;
@@ -128,41 +143,50 @@ async function fundWallet(address, fullAddress, amount, timeout = 120000) {
 
   if (amountNeeded <= 0n) {
     console.log(`  ✓ Already funded`);
-    return currentBalance;
+    return { success: true, balance: currentBalance.toString() };
   }
-
-  const GENESIS_PRIVKEY = GENESIS_ACCOUNTS[0].privkey;
-
-  console.log(`  Transferring ${amountNeededCKB} CKB from genesis account...`);
+  console.log(`  Depositing ${amountNeededCKB} CKB from devnet genesis...`);
 
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
-      execSync(
-        `npx offckb transfer --network devnet --privkey ${GENESIS_PRIVKEY} ${addressToUse} ${amountNeededCKB} 2>&1`,
-        { encoding: "utf-8", timeout },
+      // Use offckb transfer with genesis key - more reliable than deposit
+      // which has race conditions with rapid successive calls
+      const transferOutput = execSync(
+        `npx offckb transfer --network devnet --privkey 0x6109170b275a09ad54877b82f7d9930f88cab5717d484fb4741ae9d1dd078cd6 ${addressToUse} ${amountNeededCKB}`,
+        { encoding: "utf-8", timeout, stdio: ["pipe", "pipe", "pipe"] },
       );
+      console.log(`  Transfer output: ${transferOutput.trim().slice(0, 100)}`);
 
-      await sleep(1000);
-      await rpcRequest("generate_block", []);
-      await sleep(1000);
+      // Wait for the transaction to be confirmed
+      // offckb devnet auto-mines, but we need to poll for confirmation
+      let confirmed = false;
+      for (let i = 0; i < 10; i++) {
+        await sleep(2000);
+        const finalBalance = await getBalance(addressToUse);
+        if (finalBalance >= targetBalance) {
+          console.log(
+            `  Final balance: ${(finalBalance / 100000000n).toString()} CKB`,
+          );
+          return { success: true, balance: finalBalance.toString() };
+        }
+      }
 
       const finalBalance = await getBalance(addressToUse);
-      console.log(
-        `  Final balance: ${(finalBalance / 100000000n).toString()} CKB`,
+      throw new Error(
+        `Balance insufficient after deposit: ${finalBalance} < ${targetBalance}`,
       );
-
-      return finalBalance;
     } catch (e) {
       if (attempt === 3) {
-        console.error(`  Transfer failed after 3 attempts: ${e.message}`);
-        throw e;
+        console.error(`  ✗ Deposit failed after 3 attempts: ${e.message}`);
+        const finalBalance = await getBalance(addressToUse);
+        return {
+          success: false,
+          error: e.message,
+          balance: finalBalance.toString(),
+        };
       }
-      console.log(`  Transfer attempt ${attempt} failed, retrying...`);
-      await sleep(3000);
-      try {
-        await rpcRequest("generate_block", []);
-      } catch (_) {}
-      await sleep(1000);
+      console.log(`  Deposit attempt ${attempt} failed, retrying...`);
+      await sleep(5000);
     }
   }
 }
@@ -204,26 +228,21 @@ function getBlockAssemblerAddress() {
 }
 
 async function transferToAddress(toAddress, amount) {
-  const GENESIS_PRIVKEY = GENESIS_ACCOUNTS[0].privkey;
-
   console.log(
-    `  Transferring ${(amount / 100000000n).toString()} CKB from genesis account to ${toAddress.slice(0, 10)}...`,
+    `  Depositing ${(amount / 100000000n).toString()} CKB to ${toAddress.slice(0, 10)}...`,
   );
 
   try {
     const amountCKB = (amount / 100000000n).toString();
     execSync(
-      `npx offckb transfer --network devnet --privkey ${GENESIS_PRIVKEY} ${toAddress} ${amountCKB} 2>&1`,
+      `npx offckb deposit --network devnet ${toAddress} ${amountCKB} 2>&1`,
       {
         stdio: "pipe",
       },
     );
-    console.log("  Transfer complete");
+    console.log("  Deposit complete");
   } catch (e) {
-    console.error("  Transfer failed:", e.message);
-    console.log("  Mining additional blocks...");
-    await rpcRequest("generate_block", []);
-    await sleep(1000);
+    console.error("  Deposit failed:", e.message);
   }
 }
 
@@ -232,7 +251,7 @@ async function fundWallets(wallets, amountPerWallet) {
 
   for (const wallet of wallets) {
     try {
-      const balance = await fundWallet(
+      const result = await fundWallet(
         wallet.address,
         wallet.fullAddress,
         amountPerWallet,
@@ -240,9 +259,12 @@ async function fundWallets(wallets, amountPerWallet) {
       results.push({
         label: wallet.label,
         address: wallet.address,
-        balance: balance.toString(),
-        success: true,
+        balance: result.balance,
+        success: result.success,
+        error: result.error,
       });
+      // Add delay between wallet funding to prevent race conditions
+      await sleep(2000);
     } catch (e) {
       results.push({
         label: wallet.label,
@@ -279,10 +301,9 @@ module.exports = {
   fundWallets,
   checkWalletsFunded,
   waitForBlocks: async (n) => {
-    for (let i = 0; i < n; i++) {
-      await rpcRequest("generate_block", []);
-      await sleep(1000);
-    }
+    // In offckb devnet, blocks are auto-mined when transactions are submitted
+    // Just wait for the blockchain to process
+    await sleep(n * 2000);
   },
   getBlockAssemblerAddress,
   sleep,

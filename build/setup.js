@@ -86,6 +86,34 @@ async function main() {
     }
   });
 
+  // Fund the frontend wallet (user1) — standard CKB address from known private key
+  logSection("3b. Funding frontend wallet");
+  const frontendWallet = wallets.getFrontendWallet("devnet");
+  log(`  Label: ${frontendWallet.label}`, colors.blue);
+  log(
+    `  Private key: ${frontendWallet.privateKey.slice(0, 18)}...`,
+    colors.blue,
+  );
+  log(`  Full address: ${frontendWallet.fullAddress}`, colors.cyan);
+
+  try {
+    const frontendResult = await faucet.fundWallet(
+      frontendWallet.address,
+      frontendWallet.fullAddress,
+      fundingAmount,
+    );
+    if (frontendResult.success) {
+      log(
+        `  ✓ ${frontendWallet.label.padEnd(12)} ${(BigInt(frontendResult.balance) / 100000000n).toString()} CKB`,
+        colors.green,
+      );
+    } else {
+      log(`  ✗ ${frontendWallet.label} ${frontendResult.error}`, colors.red);
+    }
+  } catch (err) {
+    log(`  ✗ ${frontendWallet.label} ${err.message}`, colors.red);
+  }
+
   logSection("4. Deploying contracts");
   log("Using genesis account for deployment", colors.blue);
 
@@ -114,11 +142,34 @@ async function main() {
 
     log("\nDeployed contracts:", colors.bright);
     Object.entries(deploymentInfo.contracts).forEach(([name, info]) => {
-      log(
-        `  ${name.padEnd(15)} ${info.binaryHash.slice(0, 18)}...`,
-        colors.cyan,
-      );
+      const hash = info.code_hash || info.binaryHash || "unknown";
+      log(`  ${name.padEnd(15)} ${hash.slice(0, 18)}...`, colors.cyan);
     });
+
+    // TODO: Initialize vault cell (requires CCC signer with custom type script support)
+    // The vault contract binary is deployed but the state machine cell needs to be created.
+    // This requires building a transaction with the vault type script and signing it properly.
+
+    // Initialize vault cell after contract deployment
+    logSection("6. Initializing vault cell");
+    try {
+      const { execSync } = require("child_process");
+      const initScriptPath = require("path").resolve(
+        __dirname,
+        "init-vault.js",
+      );
+      const initResult = execSync(`node "${initScriptPath}"`, {
+        encoding: "utf-8",
+        timeout: 120000,
+        stdio: "inherit",
+      });
+      log("  ✓ Vault cell initialized", colors.green);
+    } catch (e) {
+      log(
+        `  ⚠ Vault initialization failed (can be done manually with: node build/init-vault.js): ${e.message.slice(0, 100)}`,
+        colors.yellow,
+      );
+    }
   }
 
   logSection("Summary");
@@ -146,10 +197,8 @@ async function main() {
     const info = deployer.loadDeploymentInfo("devnet");
     if (info) {
       Object.entries(info.contracts).forEach(([name, contract]) => {
-        log(
-          `  ${name.padEnd(15)} ${contract.binaryHash.slice(0, 18)}...`,
-          colors.cyan,
-        );
+        const hash = contract.code_hash || contract.binaryHash || "unknown";
+        log(`  ${name.padEnd(15)} ${hash.slice(0, 18)}...`, colors.cyan);
       });
     }
   }

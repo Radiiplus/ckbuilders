@@ -1,4 +1,4 @@
-# 📊 Builder Track Weekly Report — Week 2 (In Progress)
+# 📊 Builder Track Weekly Report — Week 2
 
 > **Tracking progress in the CKB Academy Builder Program**
 
@@ -11,7 +11,7 @@
   </tr>
   <tr>
     <td>📅 <b>Week Ending:</b></td>
-    <td>April 4, 2026</td>
+    <td>April 12, 2026</td>
   </tr>
   <tr>
     <td>🎯 <b>Track:</b></td>
@@ -19,7 +19,7 @@
   </tr>
   <tr>
     <td>📌 <b>Status:</b></td>
-    <td>Week 2 — Halfway Through</td>
+    <td>Week 2 — Complete ✅</td>
   </tr>
 </table>
 
@@ -28,14 +28,14 @@
 ## 📚 Courses Completed
 
 ```
-Progress: ████████░░░░░░░░░░░░ 40%
-          Summary 1 ✅  →  Summary 2 🔄
+Progress: ████████████████████ 100%
+          Summary 1 ✅  →  Summary 2 ✅
 ```
 
 | Status | Module | Topics |
 |--------|--------|--------|
 | ✅ | **Summary 1** | CKB architecture, cell model, transaction structure |
-| 🔄 | **Summary 2** | _Still In Progress_ |
+| ✅ | **Summary 2** | Lock scripts, type scripts, xUDT, contract development |
 
 ### Key Topics Covered
 - 🧱 Nervos CKB architecture and cell model
@@ -79,88 +79,35 @@ Progress: ████████░░░░░░░░░░░░ 40%
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### ✅ Week 2 Achievements (So Far)
+### ✅ Week 2 Achievements
 
 #### Documentation
 - [x] Rewrote root README as aggregate of all component READMEs
 - [x] Added "How Everyone Profits" section showing value for all stakeholders
 - [x] Individual READMEs in place for contracts/, sdk/, build/, auto/
 
-#### Code Cleanup
-- [x] Removed all comments from 61 source files (39 JS + 22 Rust)
-- [x] Pruned 13 unused npm dependencies from package.json
-- [x] Cleaned .env.example — removed all comment lines
-- [x] Added local clone directories to `.gitignore` (lumos, offckb, ccc-repo, ckb-testtool)
-
-### 📦 Complete Project State
-
-#### ✅ Smart Contracts — All 5 Complete
-```
-contracts/
-├── factory/    🏭 DEX Factory
-├── pool/       🔄 DEX Pool (x*y=k AMM)
-├── registry/   📋 DEX Registry
-├── dex/        🏪 DEX Instance
-└── launchpad/  🚀 Token Launchpad (bonding curve + refunds)
-```
-
-#### ✅ JavaScript SDK — Full Protocol Library
-| Module | Purpose |
-|--------|---------|
-| `sdk/factory.js` | Factory + DEX encoding/decoding, fee calculations |
-| `sdk/pool.js` | AMM math, LP token minting/burning, fee vault |
-| `sdk/curve.js` | Bonding curve pricing, status lifecycle |
-| `sdk/launchpad.js` | Launch config creation, transaction builders |
-| `sdk/refund.js` | Refund claims, Merkle proof witnesses |
-| `sdk/fee.js` | RBF-aware fee estimation |
-| `sdk/txbuilder.js` | Transaction construction + signing |
-| `sdk/modules/merkle.js` | Blake2b Merkle tree generation/verification |
-| `sdk/modules/crypto.js` | SHA256 hashing, ID generation |
-
-#### ✅ Devnet Infrastructure
-- [x] Automated devnet setup (`build/main.js`)
-- [x] Multi-wallet management (genesis, alice, bob, charlie)
-- [x] Faucet for funding test accounts
-- [x] Contract deployment pipeline (`build/deploy.js`)
-
-#### ✅ Protocol Automation CLI — Tested & Working
-- [x] Full lifecycle orchestrator (`auto/main.js`)
-- [x] Token launch creation, contributions, LP claims, refunds
-- [x] Arbitrage opportunity tracker
-- [x] Diagnosis tools (curve scanner, RBF tracer, UTXO debugger)
-
-#### 🌐 Repository
-- ✅ **Live on GitHub:** https://github.com/Radiiplus/ckbuilders
-
----
-
-## 🖥️ Environment Setup
-
-| Tool | Status | Notes |
-|------|--------|-------|
-| **CKB Devnet** | 🟢 Running | Automated via `offckb` |
-| **Rust & Cargo** | 🟢 Installed | RISC-V target configured |
-| **Node.js** | 🟢 Installed | 3 dependencies only (cleaned) |
-| **CLI Tools** | 🟢 Integrated | offckb, CCC SDK, ckb-testtool |
-
----
+#### Vault Contract — Type Script Execution Debugging
+- [x] Built vault binary with page-aligned sections (4KB boundaries)
+- [x] Configured CKB2023 hardfork on devnet (CKB-VM v2)
+- [x] Discovered other contracts (factory, pool, dex, launchpad, registry) work because they are **data-only cells** — no type script execution
+- [x] Vault is the **first contract designed to execute as a type script** on-chain
+- [x] Identified root cause: `.rodata` section has `W` (writable) flag in compiled `ckb-std 1.1.0` binaries, triggering `MemWriteOnExecutablePage` on CKB-VM v2
+- [x] Confirmed minimal contracts (no `ckb-std`) execute successfully
+- [x] Filed GitHub issue on [nervosnetwork/ckb-std](https://github.com/nervosnetwork/ckb-std)
 
 ## 🎯 What's Left
 
 ```
 Remaining:
 ┌─────────────────────────────────────────────────────────────┐
-│  1. 🎨 Build the UI for the Ohrex protocol                │
-│  2. 📚 Complete Summary 2 (CKB Academy)                    │
+│  1. ⏳ Await ckb-std fix for .rodata W flag issue          │
+│     → Frontend is built, only contract integration blocked │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 | # | Goal | Priority | Status |
 |---|------|----------|--------|
-| 1 | Build UI | 🔴 High | ⏳ Next |
-| 2 | Complete Summary 2 | 🟡 Medium | ⏳ Pending |
-
-**Everything backend is done — contracts, SDK, devnet, CLI, testing. The UI is the last piece.**
+| 1 | ckb-std fix for type script execution | 🔴 High | ⏳ Awaiting response from Nervos team |
 
 ---
 
@@ -168,15 +115,30 @@ Remaining:
 
 | Category | Completion |
 |----------|------------|
-| Coursework | 40% |
+| Coursework | 100% |
 | Project Setup | 100% |
 | Contract Dev | 100% |
 | SDK Development | 100% |
 | Testing | 100% |
 | Documentation | 100% |
-| UI / Frontend | 0% |
+| UI / Frontend | 100% |
+| Type Script Integration | ⚠️ Blocked by ckb-std issue |
 
-**Overall Week 2 (Halfway): ✅ Backend Complete — UI is the last piece**
+**Overall Week 2: ✅ Everything Complete — Coursework done, frontend built, backend fully operational. Only blocker is upstream `ckb-std` bug preventing on-chain type script execution.**
+
+---
+
+## 🐛 GitHub Issue Filed
+
+**Issue:** `.rodata` section has writable (`W`) flag causing `MemWriteOnExecutablePage` on CKB2023 (CKB-VM v2)
+
+**Repository:** [nervosnetwork/ckb-std](https://github.com/nervosnetwork/ckb-std)
+
+**Summary:** Contracts built with `ckb-std 1.1.0` + `default_alloc!()` produce ELF binaries where the `.rodata` section header has `WAM` (Write+Alloc+Merge) flags. CKB-VM v2 rejects these as W^X violations, even though program headers show proper page-aligned separation. Minimal contracts without `ckb-std` execute successfully.
+
+**Impact:** The entire protocol is built — contracts, SDK, devnet, CLI, and **frontend UI is complete**. The only remaining piece is connecting the frontend to on-chain contract execution, which is blocked by this `ckb-std` issue. Without type script execution, the protocol works with data-only cells on devnet (off-chain SDK validation) but cannot achieve trustless on-chain validation on mainnet.
+
+**Workaround:** Create state cells without type scripts (data-only). Off-chain SDK handles validation. On mainnet, type scripts will work once `ckb-std` fixes the section flags.
 
 ---
 

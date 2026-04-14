@@ -13,11 +13,24 @@ const RPC_URL = "http://127.0.0.1:8114";
 function stopCKBProcesses() {
   try {
     if (isWindows) {
-      execSync("taskkill /F /IM ckb.exe 2>nul || true");
-      execSync("taskkill /F /IM offckb 2>nul || true");
+      try {
+        execSync("taskkill /F /IM ckb.exe", { stdio: "ignore" });
+      } catch {}
+      try {
+        execSync("taskkill /F /IM offckb.exe", { stdio: "ignore" });
+      } catch {}
+      try {
+        execSync('taskkill /F /IM node.exe /FI "WINDOWTITLE eq offckb*"', {
+          stdio: "ignore",
+        });
+      } catch {}
     } else {
-      execSync("pkill -9 -f 'ckb run' 2>/dev/null || true");
-      execSync("pkill -9 -f 'offckb node' 2>/dev/null || true");
+      try {
+        execSync("pkill -9 -f 'ckb run'", { stdio: "ignore" });
+      } catch {}
+      try {
+        execSync("pkill -9 -f 'offckb node'", { stdio: "ignore" });
+      } catch {}
     }
   } catch {}
 }
@@ -81,23 +94,35 @@ function sleep(ms) {
 }
 
 async function start(options = {}) {
-  const { timeout = 60000 } = options;
+  const { timeout = 60000, clean = true } = options;
 
-  
   stopCKBProcesses();
   isRunning = false;
   devnetProcess = null;
   await sleep(2000);
 
+  // Clean devnet data to reset genesis accounts
+  if (clean) {
+    try {
+      execSync("npx offckb clean --network devnet", {
+        stdio: "pipe",
+        timeout: 15000,
+      });
+    } catch (e) {
+      // Clean might fail if no data exists, that's fine
+    }
+    await sleep(1000);
+  }
+
   return new Promise((resolve, reject) => {
     if (isWindows) {
-      devnetProcess = spawn("cmd.exe", ["/c", "npx offckb node"], {
+      devnetProcess = spawn("cmd.exe", ["/c", "npx offckb node 0.205.0"], {
         detached: false,
         stdio: ["ignore", "pipe", "pipe"],
         windowsHide: false,
       });
     } else {
-      devnetProcess = spawn("npx", ["offckb", "node"], {
+      devnetProcess = spawn("npx", ["offckb", "node", "0.205.0"], {
         detached: false,
         stdio: ["ignore", "pipe", "pipe"],
       });

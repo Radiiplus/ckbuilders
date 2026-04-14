@@ -6,7 +6,12 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const bech32Lib = require("bech32");
+const { secp256k1 } = require("@noble/curves/secp256k1");
+const { ccc } = require("@ckb-ccc/core");
 
+// CKB address derivation: blake2b-256 with CKB personalization, truncated to 20 bytes
+// This matches CCC's ccc.hashCkb() and the on-chain secp256k1 lock script derivation
+// Note: This is NOT blake2b with dkLen=20 — ccc.hashCkb is blake2b-256, then truncated
 const LOCK_CODE_HASH =
   process.env.LOCK_CODE_HASH ||
   "0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8";
@@ -16,7 +21,48 @@ const WALLETS_CONFIG = {
   count: 4,
   labels: ["treasury", "liquidity", "user1", "user2"],
   fundingAmount: 1000000000000n,
+  // Frontend wallet: known private key that matches public/src/config.ts
+  frontendPrivateKey:
+    "0x5d45fdd4aaa40cf4f04ce7950c6df8716f62f8f5206f6baf3bf504c62c6589f1",
 };
+
+/** Generate wallet from a known private key (for frontend wallet) */
+function createWalletFromKey(privateKeyHex, label, network = "devnet") {
+  const pkBytes = Buffer.from(
+    privateKeyHex.startsWith("0x") ? privateKeyHex.slice(2) : privateKeyHex,
+    "hex",
+  );
+
+  const pubKeyBytes = secp256k1.getPublicKey(pkBytes, true);
+  // Correct CKB derivation: ccc.hashCkb (blake2b-256 + CKB personalization) truncated to 20 bytes
+  const args = ccc.hashCkb(pubKeyBytes).slice(0, 42);
+  const fullAddress = generateCkbAddress(args);
+
+  return {
+    label,
+    privateKey: privateKeyHex.startsWith("0x")
+      ? privateKeyHex
+      : "0x" + privateKeyHex,
+    address: args,
+    fullAddress,
+    argsHash: args,
+    lockScript: {
+      codeHash: LOCK_CODE_HASH,
+      hashType: "type",
+      args,
+    },
+    createdAt: new Date().toISOString(),
+    network,
+  };
+}
+
+function getFrontendWallet(network = "devnet") {
+  return createWalletFromKey(
+    WALLETS_CONFIG.frontendPrivateKey,
+    "frontend",
+    network,
+  );
+}
 
 function generateCkbAddress(args, hrp = "ckt") {
   const argsHex = args.startsWith("0x") ? args.slice(2) : args;
@@ -39,20 +85,23 @@ function generateCkbAddress(args, hrp = "ckt") {
 
 function generateWallet(label, network = "devnet") {
   const privateKeyBytes = crypto.randomBytes(32);
-  const hash = crypto.createHash("sha256").update(privateKeyBytes).digest();
-  const argsHash = "0x" + hash.toString("hex");
-  const fullAddress = generateCkbAddress(argsHash);
+  const privateKeyHex = "0x" + privateKeyBytes.toString("hex");
+
+  // CKB-standard address: ccc.hashCkb (blake2b-256 + CKB personalization) truncated to 20 bytes
+  const pubKeyBytes = secp256k1.getPublicKey(privateKeyBytes, true);
+  const args = ccc.hashCkb(pubKeyBytes).slice(0, 42);
+  const fullAddress = generateCkbAddress(args);
 
   return {
     label,
-    privateKey: "0x" + privateKeyBytes.toString("hex"),
-    address: argsHash,
+    privateKey: privateKeyHex,
+    address: args,
     fullAddress,
-    argsHash: argsHash,
+    argsHash: args,
     lockScript: {
       codeHash: LOCK_CODE_HASH,
       hashType: "type",
-      args: argsHash,
+      args,
     },
     createdAt: new Date().toISOString(),
     network,
@@ -148,6 +197,8 @@ module.exports = {
   getWalletAddresses,
   getWalletsSummary,
   generateCkbAddress,
+  createWalletFromKey,
+  getFrontendWallet,
   WALLETS_CONFIG,
   LOCK_CODE_HASH,
 };

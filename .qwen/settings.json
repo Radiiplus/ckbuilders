@@ -9,7 +9,22 @@
       "Bash(timeout *)",
       "Bash(curl *)",
       "Bash(python *)",
-      "Bash(dir *)"
+      "Bash(dir *)",
+      "Bash(python3 *)",
+      "Bash(rmdir *)",
+      "Bash(netstat *)",
+      "Bash(copy *)",
+      "Bash(sed *)",
+      "Bash(taskkill *)",
+      "Bash(ls *)",
+      "Bash(mkdir *)",
+      "Bash(echo.)",
+      "Bash(echo *)",
+      "Bash(where *)",
+      "Bash(powershell *)",
+      "Bash(cargo build *)",
+      "Bash(git checkout *)",
+      "Bash(handle *)"
     ]
   },
   "$version": 3
