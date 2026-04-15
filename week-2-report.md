@@ -11,7 +11,7 @@
   </tr>
   <tr>
     <td>📅 <b>Week Ending:</b></td>
-    <td>April 12, 2026</td>
+    <td>April 8, 2026</td>
   </tr>
   <tr>
     <td>🎯 <b>Track:</b></td>
