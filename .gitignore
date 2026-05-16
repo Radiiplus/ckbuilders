@@ -1,56 +1,19 @@
-# Nervos CKB
-target/
-*.lock
-
-# Node
-node_modules/
-npm-debug.log
-yarn-error.log
-
-# Deployments (auto-generated)
-deployments/
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS
-.DS_Store
-Thumbs.db
-
+```
 # Build artifacts
-*.o
-*.so
-*.dll
+build/
 
-# Rust
-Cargo.lock
-
-# Contract build artifacts (all platforms)
-contracts/*/target/
-contracts/*/target-windows/
-contracts/*/target-riscv/
-
-# Local development folders
-lumos/
-offckb/
-ccc-repo/
-ckb-testtool/
-archive/
-
-# Environment variables
+# Environment files
 .env
+.env.local
+.env.*
 
-.qwen/
-.threadbridge/
--p/
+# Dependencies
+node_modules/
 
-vault-final-test.log
-vault-test-aligned.log
+# Logs and temporary files
+*.log
+*.tmp
 
-public/
-server/
-.qwen
+# Editors
+.vscode/
+```
